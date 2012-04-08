@@ -5,7 +5,7 @@ if ( ! class_exists( 'TwitterOAuth' ) )
 /**
  * Extending the TwitterOAuth class to utilize the WP HTTP API.
  */
-class PTTTwitterOAuth extends TwitterOAuth {
+class pttTwitterOAuth extends TwitterOAuth {
 
 	public $response_body;
 

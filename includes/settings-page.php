@@ -1,6 +1,6 @@
 <?php
 
-class PTTSettingsPage {
+class pttSettingsPage {
 
 	/**
 	 * Consumer key for the Twitter App.
@@ -244,7 +244,7 @@ class PTTSettingsPage {
 		$this->_include_twitteroauth();
 
 		// Build TwitterOAuth object with client credentials
-		$connection = new PTTTwitterOAuth( $this->_consumer_key, $this->_consumer_secret );
+		$connection = new pttTwitterOAuth( $this->_consumer_key, $this->_consumer_secret );
 
 		// Get temporary credentials
 		$request_token = $connection->getRequestToken( $this->_oauth_callback );
@@ -476,4 +476,4 @@ class PTTSettingsPage {
 		exit();
 	}
 }
-$PTTSettingsPage = new PTTSettingsPage();
+$pttSettingsPage = new pttSettingsPage();

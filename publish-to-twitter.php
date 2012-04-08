@@ -11,26 +11,17 @@ Author URI: http://github.com/tollmanz
 /**
  * Wrapper to initiate plugin functionality.
  */
-class PTTPublishToTwitter {
+class pttPublishToTwitter {
 
 	public function __construct() {
-		// Controls the admin page for the plugin.
-		require_once( __DIR__ . '/includes/settings-page.php' );
+		// All functionality related to the ptt-twitter-account CPT.
+		require_once( __DIR__ . '/includes/publish-tweet.php' );
 
 		// Handles publishing the post to Twitter.
 		require_once( __DIR__ . '/includes/publish-tweet.php' );
 
-		// Get the basics setup
-		add_action( 'init', array( $this, 'register_post_type' ) );
-		add_action( 'init', array( $this, 'associate_taxonomies' ) );
-	}
-
-	public function register_post_type() {
-
-	}
-
-	public function associate_taxonomies() {
-
+		// Controls the admin page for the plugin.
+		require_once( __DIR__ . '/includes/settings-page.php' );
 	}
 }
-$PTTPublishToTwitter = new PTTPublishToTwitter();
+$pttPublishToTwitter = new pttPublishToTwitter();
