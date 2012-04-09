@@ -9,8 +9,10 @@ class pttTwitterAccount {
 	 */
 	public function __construct() {
 		// Get the basics setup
-		add_action( 'init', array( $this, 'register_post_type' ) );
-		add_action( 'init', array( $this, 'associate_taxonomies' ) );
+		add_action( 'init', array( $this, 'register_post_type' ), 100 );	// Registering late to capture taxonomies
+
+		// Remove the "nav_menu" taxonomy
+		add_filter( 'ptt_taxonomy_names', array( $this, 'ptt_taxonomy_names' ) );
 	}
 
 	/**
@@ -40,14 +42,28 @@ class pttTwitterAccount {
 			'rewrite' => false,
 			'query_var' => false,
 			'can_export' => false,
-			'supports' => array( 'title', 'editor', 'thumbnail', 'comments' ) // @todo: adding comments to use as a log of tweets. consider if I really want to do this or not.
+			'supports' => array( 'title', 'editor', 'thumbnail', 'comments', 'post-formats' ), // @todo: adding comments to use as a log of tweets. consider if I really want to do this or not.
+			'taxonomies' => apply_filters( 'ptt_taxonomy_names', get_taxonomies() )	// Associate all taxonomies with this post type; can be filtered with apply filters
 		);
 
 		register_post_type( 'ptt-twitter-account', apply_filters( 'ptt_register_post_type', $args ) );
 	}
 
-	public function associate_taxonomies() {
+	/**
+	 * Removes the "nav_menu" taxonomy from the list of taxonomies.
+	 *
+	 * @param $taxonomy_names
+	 * @return array
+	 */
+	public function ptt_taxonomy_names( $taxonomy_names ) {
+		$cleaned_taxonomies = array();
 
+		foreach ( $taxonomy_names as $taxonomy_name ) {
+			if ( 'nav_menu' != $taxonomy_name )
+				$cleaned_taxonomies[] = $taxonomy_name;
+		}
+
+		return $cleaned_taxonomies;
 	}
 }
 $pttTwitterAccount = new pttTwitterAccount();
