@@ -12,7 +12,7 @@ class pttTwitterAccount {
 		add_action( 'init', array( $this, 'register_post_type' ), 100 );	// Registering late to capture taxonomies
 
 		// Remove the "nav_menu" taxonomy
-		add_filter( 'ptt_taxonomy_names', array( $this, 'ptt_taxonomy_names' ) );
+		add_filter( 'ptt_taxonomies', array( $this, 'ptt_taxonomy_names' ) );
 	}
 
 	/**
@@ -43,7 +43,7 @@ class pttTwitterAccount {
 			'query_var' => false,
 			'can_export' => false,
 			'supports' => array( 'title', 'editor', 'thumbnail', 'comments', 'post-formats' ), // @todo: adding comments to use as a log of tweets. consider if I really want to do this or not.
-			'taxonomies' => apply_filters( 'ptt_taxonomy_names', get_taxonomies() )	// Associate all taxonomies with this post type; can be filtered with apply filters
+			'taxonomies' => apply_filters( 'ptt_taxonomies', get_taxonomies() )	// Associate all taxonomies with this post type; can be filtered with apply filters
 		);
 
 		register_post_type( 'ptt-twitter-account', apply_filters( 'ptt_register_post_type', $args ) );
