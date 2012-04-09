@@ -15,7 +15,7 @@ class pttPublishToTwitter {
 
 	public function __construct() {
 		// All functionality related to the ptt-twitter-account CPT.
-		require_once( __DIR__ . '/includes/publish-tweet.php' );
+		require_once( __DIR__ . '/includes/cpt-ptt-twitter-account.php' );
 
 		// Handles publishing the post to Twitter.
 		require_once( __DIR__ . '/includes/publish-tweet.php' );
