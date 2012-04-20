@@ -342,7 +342,7 @@ class pttSettingsPage {
 
 						if ( $post_id = wp_insert_post( $post_data ) ) {
 							$updated_oauth = update_post_meta( $post_id, '_ptt_oauth_token', $oauth_token ) ? true : false;
-							$updated_oauth_secret = update_post_meta( $post_id, '_ptt_oauth_token_secret', $oauth_token ) ? true : false;
+							$updated_oauth_secret = update_post_meta( $post_id, '_ptt_oauth_token_secret', $oauth_token_secret ) ? true : false;
 							$updated_user_id = update_post_meta( $post_id, '_ptt_user_id', $user_id ) ? true : false;
 
 							// Since the tokens are the most important part of this process, we need to verify that they saved
@@ -385,35 +385,11 @@ class pttSettingsPage {
 		if ( ! $id )
 			return false;
 
-		// Remove the account from the option
-		$twitter_accounts = get_option( 'ptt_twitter_accounts' );
-		if ( is_array( $twitter_accounts ) ) {
-			foreach ( $twitter_accounts as $this_id => $details ) {
-				if ( $id == $this_id )
-					unset( $twitter_accounts[$this_id] );
-			}
-		}
-
-		if ( ! empty( $twitter_accounts ) )
-			update_option( 'ptt_twitter_accounts', $twitter_accounts );
+		// Delete the post
+		if ( wp_delete_post( $id ) )
+			$this->_set_message_and_redirect( 'ptt-twitter', '400', 'The user has been unauthorized and associations have been removed.', 'updated' );
 		else
-			delete_option( 'ptt_twitter_accounts' );
-
-		// Remove any associations
-		$pairings = get_option( 'ptt-publish-to-twitter-settings' );
-		if ( is_array( $pairings ) ) {
-			foreach ( $pairings as $key => $pairing ) {
-				if ( $pairing['twitter_account_id'] == $id )
-					unset( $pairings[$key] );
-			}
-		}
-
-		if ( ! empty( $pairings ) )
-			update_option( 'ptt-publish-to-twitter-settings', $pairings );
-		else
-			delete_option( 'ptt-publish-to-twitter-settings' );
-
-		$this->_set_message_and_redirect( 'ptt-twitter', '400', 'The user has been unauthorized and associations have been removed.', 'updated' );
+			$this->_set_message_and_redirect( 'ptt-twitter', '301', 'The user was unable to be removed. Please try again.', 'error' );
 	}
 
 	/**
