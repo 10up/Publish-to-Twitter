@@ -29,6 +29,13 @@ class pttSettingsPage {
 	 * @var string
 	 */
 	private $_settings_page_url;
+
+	/**
+	 * WP_Query object containing the Twitter Account posts.
+	 *
+	 * @var object
+	 */
+	private $_twitter_accounts;
 	
 	/**
 	 * Holds errors related to Twitter interaction.
@@ -121,9 +128,14 @@ class pttSettingsPage {
 	 * The user is also given buttons to add more pairings, as well as delete current pairings.
 	 */
 	public function add_associations_input() {
-		if ( $twitter_accounts = get_option( 'ptt_twitter_accounts' ) ) :	?>
+		if ( $this->_retrieve_twitter_accounts_query()->have_posts() ) : ?>
 			<div id="ptt-twitter-category-pairings">
-				<?php if ( $associations = get_option( 'ptt-publish-to-twitter-settings' ) ) : ?>
+
+				<?php $this->_account_category_association_selects( $this->_retrieve_twitter_accounts_query() ); ?>
+
+
+
+				<?php /*if ( $associations = get_option( 'ptt-publish-to-twitter-settings' ) ) : ?>
 				<?php foreach ( $associations as $key => $pairing ) : ?>
 					<?php $this->_account_category_association_selects( $twitter_accounts, $pairing['category_id'], $pairing['twitter_account_id'] ); ?>
 					<?php endforeach; ?>
@@ -132,7 +144,7 @@ class pttSettingsPage {
 				<?php endif; ?>
 			</div>
 			<a href="#add" class="ptt-add-another button">Add Association</a>
-			<?php $this->_account_category_association_selects( $twitter_accounts, 0, 0, true ); ?>
+			<?php $this->_account_category_association_selects( $twitter_accounts, 0, 0, true ); */?>
 		<?php else : ?>
 			<p><em>You must authenticate one Twitter account in order to begin associating accounts with categories.</em></p>
 		<?php endif;
@@ -158,9 +170,9 @@ class pttSettingsPage {
 			&nbsp;<em>automatically Tweet to:</em>&nbsp;
 			<select name="ptt-publish-to-twitter-settings[twitter][]">
 				<option value="-99">Choose a Twitter Account</option>
-				<?php foreach ( $twitter_accounts as $id => $user ) : ?>
-				<option value="<?php echo absint( $user['id'] ); ?>" <?php selected( $user['id'], $twitter_account_id ); ?>>@<?php echo esc_html( $user['screen_name'] ); ?></option>
-				<?php endforeach; ?>
+				<?php while( $twitter_accounts->have_posts() ) : $twitter_accounts->the_post(); ?>
+					<option value="<?php echo absint( get_post_meta( get_the_ID(), '_ptt_user_id', true ) ); ?>" <?php selected( get_post_meta( get_the_ID(), '_ptt_user_id', true ), $twitter_account_id ); ?>>@<?php the_title(); ?></option>
+				<?php endwhile; ?>
 			</select>
 			<a href="#delete" class="ptt-delete button">Delete</a>
 		</div>
@@ -175,16 +187,37 @@ class pttSettingsPage {
 	 * The user can also click a link to authorize additional accounts.
 	 */
 	public function add_accounts_input() {
-		if ( $twitter_accounts = get_option( 'ptt_twitter_accounts' ) ) :
-			foreach ( $twitter_accounts as $id => $details ) : ?>
+		$twitter_accounts = $this->_retrieve_twitter_accounts_query();
+
+		if ( $twitter_accounts->have_posts() ) : while( $twitter_accounts->have_posts() ) : $twitter_accounts->the_post(); ?>
 			<p>
-				<strong>@<?php echo esc_html( $details['screen_name'] ); ?></strong>
-				&nbsp;&nbsp;<a href="<?php echo add_query_arg( array( 'ptt-twitter' => wp_create_nonce( 'ptt-delete-account' ), 'ptt-twitter-id' => absint( $details['id'] ) ), admin_url( '/options.php' ) ); ?>" class="button">Remove Account</a>
+				<strong>@<?php the_title(); ?></strong>
+				&nbsp;&nbsp;<a href="<?php echo add_query_arg( array( 'ptt-twitter' => wp_create_nonce( 'ptt-delete-account' ), 'ptt-twitter-id' => get_the_ID() ), admin_url( '/options.php' ) ); ?>" class="button">Remove Account</a>
 			</p>
-			<?php endforeach; ?>
-		<?php endif; ?>
+		<?php endwhile; endif; ?>
 		<a href="<?php echo add_query_arg( array( 'ptt-twitter' => wp_create_nonce( 'ptt-authenticate' ), 'action' => 'update' ),  admin_url( '/options.php' ) ); ?>">Authorize Twitter Account</a>
 	<?php
+	}
+
+	/**
+	 * Gets the WP_Query object containing Twitter Accounts.
+	 *
+	 * Since this is used in multiple places, it is stored as an instance variable to avoid unnecessary queries.
+	 * If the object has yet to be obtained, it is generated and set to the instance var.
+	 *
+	 * @return object
+	 */
+	private function _retrieve_twitter_accounts_query() {
+		if ( is_object( $this->_twitter_accounts ) )
+			return $this->_twitter_accounts;
+
+		$this->_twitter_accounts = new WP_Query( array(
+			'post_type' => 'ptt-twitter-account',
+			'posts_per_page' => apply_filters( 'ptt_add_accounts_input_ppp', 100 ),
+			'no_found_rows' => false
+		) );
+
+		return $this->_twitter_accounts;
 	}
 
 	/**
@@ -348,6 +381,9 @@ class pttSettingsPage {
 			return false;
 
 		$id = absint( $_GET['ptt-twitter-id'] );
+
+		if ( ! $id )
+			return false;
 
 		// Remove the account from the option
 		$twitter_accounts = get_option( 'ptt_twitter_accounts' );
