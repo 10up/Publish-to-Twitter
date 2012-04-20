@@ -166,7 +166,20 @@ class pttSettingsPage {
 	?>
 		<div class="ptt-twitter-category-pairing"<?php if ( $dummy ) : ?> style="visibility:hidden;height:0;" id="ptt-twitter-category-pairing-clone"<?php endif; ?>>
 			<em>Posts in:</em>&nbsp;
-			<?php wp_dropdown_categories( array( 'echo' => true, 'orderby' => 'name', 'name' => 'ptt-publish-to-twitter-settings[category][]', 'show_option_none' => 'Choose a Category', 'selected' => $category_id, 'hide_empty' => 0 ) ); ?>
+
+			<select name="ptt-publish-to-twitter-settings[category][]">
+				<option value="-99"></option>
+
+				<?php foreach ( get_object_taxonomies( 'ptt-twitter-account' ) as $taxonomy ) : ?>
+					<optgroup label="Taxonomy : <?php echo esc_attr( $taxonomy ); ?>">
+						<?php foreach ( get_terms( $taxonomy ) as $term ) : ?>
+							<option value="<?php echo esc_attr( $taxonomy ) . ':' . absint( $term->term_id ); ?>"><?php echo esc_html( $term->name ); ?></option>
+						<?php endforeach; ?>
+					</optgroup>
+				<?php endforeach; ?>
+
+			</select>
+
 			&nbsp;<em>automatically Tweet to:</em>&nbsp;
 			<select name="ptt-publish-to-twitter-settings[twitter][]">
 				<option value="-99">Choose a Twitter Account</option>
