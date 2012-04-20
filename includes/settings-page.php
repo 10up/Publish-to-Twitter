@@ -289,34 +289,40 @@ class pttSettingsPage {
 
 				// Grab the user info and dump it in the DB
 				if ( is_object( $user ) && is_array( $access_token ) ) {
-					// Note that because Twitter's ID number can be so big, I'm not using absint in order to avoid a potential issue a 32-bit systems max integer range
+					// Note that because Twitter's ID number can be so big, I'm not using absint in order to avoid a potential issue with 32-bit systems max integer range
 					$user_id = isset( $access_token['user_id'] ) && is_numeric( $access_token['user_id'] ) && $access_token['user_id'] > 0 ? $access_token['user_id'] : 0;
-					$screen_name = isset( $access_token['screen_name'] ) ? sanitize_text_field( $access_token['screen_name'] ) : false;
+					$screen_name = isset( $access_token['screen_name'] ) ? sanitize_title( $access_token['screen_name'] ) : false;
 					$oauth_token = isset( $access_token['oauth_token'] ) ? $this->_validate_twitter_oauth_token( $access_token['oauth_token'], $user_id ) : false;
 					$oauth_token_secret = isset( $access_token['oauth_token_secret'] ) && ctype_alnum( $access_token['oauth_token_secret'] ) ? $access_token['oauth_token_secret'] : false;
 
 					// If everything is properly set, update the option
 					if ( $user_id && $screen_name && $oauth_token && $oauth_token_secret ) {
-						$cleaned_user = array(
-							$user_id => array(
-								'id' => $user_id,
-								'screen_name' => $screen_name,
-								'oauth_token' => $oauth_token,
-								'oauth_token_secret' => $oauth_token_secret
-							)
-						);
-
-						if ( $twitter_accounts = get_option( 'ptt_twitter_accounts' ) ) {
-							$twitter_accounts = $twitter_accounts + $cleaned_user;
-							update_option( 'ptt_twitter_accounts', $twitter_accounts );
-						} else {
-							add_option( 'ptt_twitter_accounts', $cleaned_user, '', 'no' );
-						}
 
 						// Since we have authenticated, clean up the temp token
 						delete_option( 'ptt_twitter_temp_token' );
 
-						$this->_set_message_and_redirect( 'ptt-twitter', '400', 'The user @' . $screen_name. ' has been authorized to use with this site!', 'updated' );
+						$post_data = array(
+							'post_status' => 'publish',
+							'post_type' => 'ptt-twitter-account',
+							'post_title' => $screen_name
+						);
+
+						if ( $post_id = wp_insert_post( $post_data ) ) {
+							$updated_oauth = update_post_meta( $post_id, '_ptt_oauth_token', $oauth_token ) ? true : false;
+							$updated_oauth_secret = update_post_meta( $post_id, '_ptt_oauth_token_secret', $oauth_token ) ? true : false;
+							$updated_user_id = update_post_meta( $post_id, '_ptt_user_id', $user_id ) ? true : false;
+
+							// Since the tokens are the most important part of this process, we need to verify that they saved
+							if ( $updated_oauth && $updated_oauth_secret && $updated_user_id ) {
+								$this->_set_message_and_redirect( 'ptt-twitter', '400', 'The user @' . $screen_name. ' has been authorized to use with this site!', 'updated' );
+							} else {
+								// Something went wrong; clean up the post and print error message
+								wp_delete_post( $post_id, true );
+								$this->_set_message_and_redirect( 'ptt-twitter', '205', 'There was an saving information about the Twitter Account to the database. Please try again.', 'error' );
+							}
+						} else {
+							$this->_set_message_and_redirect( 'ptt-twitter', '204', 'The Twitter Account could not be saved at this time. Please try again.', 'error' );
+						}
 					} else {
 						$this->_set_message_and_redirect( 'ptt-twitter', '201', 'There was an error authenticating with Twitter. Please try again.', 'error' );
 					}
