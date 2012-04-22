@@ -49,6 +49,8 @@ class pttSettingsPage {
 	 */
 	private $_twitter_errors = array();
 
+	private $_hook;
+
 	/**
 	 * Get the party started.
 	 */
@@ -67,6 +69,7 @@ class pttSettingsPage {
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 		add_action( 'admin_print_styles', array( $this, 'admin_print_styles' ) );
 
+		// Set instance vars
 		$this->_oauth_callback = admin_url( '/options.php?ptt-action=ptt-publish-to-twitter-auth' );
 		$this->_settings_page_url = admin_url( '/options-general.php?page=ptt-publish-to-twitter' );
 	}
@@ -75,7 +78,7 @@ class pttSettingsPage {
 	 * Add the submenu under Settings.
 	 */
 	public function add_submenu_page() {
-		add_submenu_page( 'options-general.php', 'Publish to Twitter Settings', 'Publish to Twitter', 'manage_options', 'ptt-publish-to-twitter', array( $this, 'submenu_page' ) );
+		$this->_hook = add_submenu_page( 'options-general.php', 'Publish to Twitter Settings', 'Publish to Twitter', 'manage_options', 'ptt-publish-to-twitter', array( $this, 'submenu_page' ) );
 	}
 
 	/**
@@ -167,7 +170,7 @@ class pttSettingsPage {
 		<div class="ptt-twitter-category-pairing"<?php if ( $dummy ) : ?> style="visibility:hidden;height:0;" id="ptt-twitter-category-pairing-clone"<?php endif; ?>>
 			<em>Posts in:</em>&nbsp;
 
-			<select name="ptt-publish-to-twitter-settings[category][]">
+			<select class="ptt-chosen-terms" name="ptt-publish-to-twitter-settings[category][]" multiple="multiple" data-placeholder="Select some terms">
 				<option value="-99"></option>
 
 				<?php foreach ( get_object_taxonomies( 'ptt-twitter-account' ) as $taxonomy ) : ?>
@@ -181,8 +184,8 @@ class pttSettingsPage {
 			</select>
 
 			&nbsp;<em>automatically Tweet to:</em>&nbsp;
-			<select name="ptt-publish-to-twitter-settings[twitter][]">
-				<option value="-99">Choose a Twitter Account</option>
+			<select class="ptt-chosen-accounts" name="ptt-publish-to-twitter-settings[twitter][]" multiple="multiple" data-placeholder="Select some accounts">
+				<option value="-99"></option>
 				<?php while( $twitter_accounts->have_posts() ) : $twitter_accounts->the_post(); ?>
 					<option value="<?php echo absint( get_post_meta( get_the_ID(), '_ptt_user_id', true ) ); ?>" <?php selected( get_post_meta( get_the_ID(), '_ptt_user_id', true ), $twitter_account_id ); ?>>@<?php the_title(); ?></option>
 				<?php endwhile; ?>
@@ -261,16 +264,20 @@ class pttSettingsPage {
 	 * Add JS.
 	 */
 	public function admin_enqueue_scripts() {
-		wp_enqueue_script( 'ptt-twitter-settings-page', get_template_directory_uri() . '/js/ptt-settings-page.js', array( 'jquery' ), '1.0' );
+		wp_register_script( 'ptt-chosen', PTT_URL . 'js/chosen.jquery.min.js', array( 'jquery' ), '0.9.8', true );
+		wp_enqueue_script( 'ptt-twitter-settings-page', PTT_URL . 'js/ptt-settings-page.js', array( 'jquery', 'ptt-chosen' ), '0.1', true );
 	}
 
 	/**
 	 * Add CSS.
 	 */
 	public function admin_print_styles() {
+		wp_enqueue_style( 'ptt-chosen', PTT_URL . 'css/chosen.css', array(), '0.9.8' );
 	?>
 		<style type="text/css">
 			.ptt-twitter-category-pairing { margin-bottom: 5px; }
+			.ptt-chosen-terms { width: 200px; }
+			.ptt-chosen-accounts { width: 200px; }
 		</style>
 	<?php
 	}
