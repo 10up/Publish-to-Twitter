@@ -95,6 +95,7 @@ class pttSettingsPage {
 				<?php settings_fields( 'ptt-publish-to-twitter-settings' ); ?>
 				<?php do_settings_sections( 'ptt-publish-to-twitter' ); ?>
 
+				<?php wp_nonce_field( 'ptt-save-associations', 'ptt-save-associations-nonce' ); ?>
 				<br /><input type="submit" value="Save Settings" name="submit" class="button-primary" />
 			</form>
 		</div>
@@ -170,12 +171,12 @@ class pttSettingsPage {
 		<div class="ptt-twitter-category-pairing"<?php if ( $dummy ) : ?> style="visibility:hidden;height:0;" id="ptt-twitter-category-pairing-clone"<?php endif; ?>>
 			<em>Posts in:</em>&nbsp;
 
-			<select class="ptt-chosen-terms" name="ptt-publish-to-twitter-settings[category][]" multiple="multiple" data-placeholder="Select some terms">
+			<select class="ptt-chosen-terms" name="ptt-associations[terms][0][]" multiple="multiple" data-placeholder="Select some terms">
 				<option value="-99"></option>
 
 				<?php foreach ( get_object_taxonomies( 'ptt-twitter-account' ) as $taxonomy ) : ?>
 					<optgroup label="Taxonomy : <?php echo esc_attr( $taxonomy ); ?>">
-						<?php foreach ( get_terms( $taxonomy ) as $term ) : ?>
+						<?php foreach ( get_terms( $taxonomy, array( 'hide_empty' => false ) ) as $term ) : ?>
 							<option value="<?php echo esc_attr( $taxonomy ) . ':' . absint( $term->term_id ); ?>"><?php echo esc_html( $term->name ); ?></option>
 						<?php endforeach; ?>
 					</optgroup>
@@ -184,10 +185,10 @@ class pttSettingsPage {
 			</select>
 
 			&nbsp;<em>automatically Tweet to:</em>&nbsp;
-			<select class="ptt-chosen-accounts" name="ptt-publish-to-twitter-settings[twitter][]" multiple="multiple" data-placeholder="Select some accounts">
+			<select class="ptt-chosen-accounts" name="ptt-associations[accounts][0][]" multiple="multiple" data-placeholder="Select some accounts">
 				<option value="-99"></option>
 				<?php while( $twitter_accounts->have_posts() ) : $twitter_accounts->the_post(); ?>
-					<option value="<?php echo absint( get_post_meta( get_the_ID(), '_ptt_user_id', true ) ); ?>" <?php selected( get_post_meta( get_the_ID(), '_ptt_user_id', true ), $twitter_account_id ); ?>>@<?php the_title(); ?></option>
+					<option value="<?php the_ID(); ?>" <?php selected(get_the_ID(), $twitter_account_id ); ?>>@<?php the_title(); ?></option>
 				<?php endwhile; ?>
 			</select>
 			<a href="#delete" class="ptt-delete button">Delete</a>
@@ -245,6 +246,10 @@ class pttSettingsPage {
 	public function validate_settings( $input ) {
 		$sanitized = array();
 
+
+
+		$this->save_associations();
+
 		// Verify that we have the same number of inputs for category and twitter; if not, there is a major issue
 		$number_of_inputs = ( isset( $input['category'] ) && isset( $input['twitter'] ) && count( $input['category'] ) == count( $input['twitter'] ) ) ? count( $input['category'] ) : 0;
 		for ( $i = 0; $i < $number_of_inputs; $i++ ) {
@@ -257,7 +262,59 @@ class pttSettingsPage {
 			}
 		}
 
-		return $sanitized;
+		return false;
+	}
+
+	public function save_associations() {
+		if ( ! isset( $_POST['ptt-save-associations-nonce'] ) || ! wp_verify_nonce( $_POST['ptt-save-associations-nonce'], 'ptt-save-associations' ) )
+			return false;
+
+		if ( ! isset( $_POST['ptt-associations'] ) || ! isset( $_POST['ptt-associations']['terms'] ) || ! isset( $_POST['ptt-associations']['accounts'] ) )
+			return false;
+
+		$associations_to_save = array();
+
+		/**
+		 * Sort input into array of the following format:
+		 *
+		 * array
+		 *     {$post_id} =>
+		 *         array
+		 *             {$taxonomy} =>
+		 *                 array
+		 *                     0 => {$term_id}
+		 *                     1 => {$term_id}
+		 *             {$taxonomy} =>
+		 *                 array
+		 *                     0 => {$term_id}
+		 *                     1 => {$term_id}
+		 */
+		foreach ( $_POST['ptt-associations']['accounts'] as $a_key => $a_value ) {
+			foreach ( $a_value as $a_sub_key => $id ) {
+				foreach ( $_POST['ptt-associations']['terms'][$a_key] as $t_key => $taxonomy_name_term_id ) {
+					$term_pieces = explode( ':', $taxonomy_name_term_id );
+					$associations_to_save[ $id ][ $term_pieces[0] ][] = $term_pieces[1];
+				}
+			}
+		}
+
+		/**
+		 * Validate the post IDs, term IDs and associate terms with posts (i.e., Twitter Accounts)
+		 */
+		foreach ( $associations_to_save as $post_id => $associations ) {
+
+			// Verify post (Twitter Account)
+			if ( get_post( $post_id ) ) {
+
+				foreach ( $associations as $taxonomy => $term_ids ) {
+					wp_set_post_terms( $post_id, $term_ids, $taxonomy );
+				}
+			}
+		}
+
+		//var_dump( $associations_to_save );
+
+		return $_POST;
 	}
 
 	/**

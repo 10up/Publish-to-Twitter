@@ -11,8 +11,7 @@ Author URI: http://github.com/tollmanz
 /**
  * Set constants
  */
-define( 'PTT_ROOT' , dirname( __FILE__ ) );
-define( 'PTT_FILE_PATH' , PTT_ROOT . '/' . basename( __FILE__ ) );
+define( 'PTT_ROOT' , __DIR__ );
 define( 'PTT_URL' , plugins_url( '/', __FILE__ ) );
 
 /**
@@ -25,13 +24,13 @@ class pttPublishToTwitter {
 		// @todo: think about adding these files only when necessary if possible
 
 		// All functionality related to the ptt-twitter-account CPT.
-		require_once( __DIR__ . '/includes/cpt-ptt-twitter-account.php' );
+		require_once( PTT_ROOT . '/includes/cpt-ptt-twitter-account.php' );
 
 		// Handles publishing the post to Twitter.
-		require_once( __DIR__ . '/includes/publish-tweet.php' );
+		require_once( PTT_ROOT . '/includes/publish-tweet.php' );
 
 		// Controls the admin page for the plugin.
-		require_once( __DIR__ . '/includes/settings-page.php' );
+		require_once( PTT_ROOT . '/includes/settings-page.php' );
 	}
 }
 $pttPublishToTwitter = new pttPublishToTwitter();
