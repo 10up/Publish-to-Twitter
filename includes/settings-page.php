@@ -130,12 +130,17 @@ class pttSettingsPage {
 	 * If there are authorized Twitter accounts, a category and Twitter account dropdown
 	 * is displayed to allow the user to select a category to associate with a Twitter account.
 	 * The user is also given buttons to add more pairings, as well as delete current pairings.
+	 *
+	 * @return void;
 	 */
 	public function add_associations_input() {
-		if ( $this->_retrieve_twitter_accounts_query()->have_posts() ) : ?>
-			<div id="ptt-twitter-category-pairings">
+		$twitter_accounts = $this->_retrieve_twitter_accounts_query();
 
-				<?php $this->_account_category_association_selects( $this->_retrieve_twitter_accounts_query() ); ?>
+		if ( $twitter_accounts->have_posts() ) : ?>
+			<div id="ptt-twitter-category-pairings">
+				<?php while ( $twitter_accounts->have_posts() ) : $twitter_accounts->the_post(); ?>
+					<?php $this->_account_category_association_selects( get_the_ID() ); ?>
+				<?php endwhile; ?>
 
 
 
@@ -161,23 +166,23 @@ class pttSettingsPage {
 	 * The function can also create a "dummy" version of the HTML that is cloned and inserted when a
 	 * user chooses to add another pairing.
 	 *
-	 * @param array $twitter_accounts
-	 * @param int $category_id
-	 * @param int $twitter_account_id
-	 * @param bool $dummy
+	 * @param int $twitter_account
 	 */
-	private function _account_category_association_selects( $twitter_accounts, $category_id = 0, $twitter_account_id = 0, $dummy = false ) {
+	private function _account_category_association_selects( $twitter_account  ) {
+		$taxonomies = get_object_taxonomies( 'ptt-twitter-account' );
+		$associated_terms = wp_get_object_terms( $twitter_account, $taxonomies );
+		$associated_term_ids = wp_list_pluck( $associated_terms, 'term_id' )
 	?>
-		<div class="ptt-twitter-category-pairing"<?php if ( $dummy ) : ?> style="visibility:hidden;height:0;" id="ptt-twitter-category-pairing-clone"<?php endif; ?>>
+		<div class="ptt-twitter-category-pairing">
 			<em>Posts in:</em>&nbsp;
 
-			<select class="ptt-chosen-terms" name="ptt-associations[terms][0][]" multiple="multiple" data-placeholder="Select some terms">
+			<select class="ptt-chosen-terms" name="ptt-associations[terms][<?php echo absint( $twitter_account ); ?>][]" multiple="multiple" data-placeholder="Select some terms">
 				<option value="-99"></option>
 
 				<?php foreach ( get_object_taxonomies( 'ptt-twitter-account' ) as $taxonomy ) : ?>
 					<optgroup label="Taxonomy : <?php echo esc_attr( $taxonomy ); ?>">
 						<?php foreach ( get_terms( $taxonomy, array( 'hide_empty' => false ) ) as $term ) : ?>
-							<option value="<?php echo esc_attr( $taxonomy ) . ':' . absint( $term->term_id ); ?>"><?php echo esc_html( $term->name ); ?></option>
+							<option value="<?php echo esc_attr( $taxonomy ) . ':' . absint( $term->term_id ); ?>" <?php selected( in_array( $term->term_id, $associated_term_ids ) ); ?>><?php echo esc_html( $term->name ); ?></option>
 						<?php endforeach; ?>
 					</optgroup>
 				<?php endforeach; ?>
@@ -185,13 +190,13 @@ class pttSettingsPage {
 			</select>
 
 			&nbsp;<em>automatically Tweet to:</em>&nbsp;
-			<select class="ptt-chosen-accounts" name="ptt-associations[accounts][0][]" multiple="multiple" data-placeholder="Select some accounts">
+			<select class="ptt-chosen-accounts" name="ptt-associations[accounts][0][]" data-placeholder="Select an account">
 				<option value="-99"></option>
-				<?php while( $twitter_accounts->have_posts() ) : $twitter_accounts->the_post(); ?>
-					<option value="<?php the_ID(); ?>" <?php selected(get_the_ID(), $twitter_account_id ); ?>>@<?php the_title(); ?></option>
-				<?php endwhile; ?>
+				<?php $ids = wp_list_pluck( $this->_retrieve_twitter_accounts_query()->posts, 'ID' ); $titles = wp_list_pluck( $this->_retrieve_twitter_accounts_query()->posts, 'post_title' ); ?>
+				<?php for ( $i = 0; $i < count( $ids ); $i++ ) : ?>
+					<option value="<?php echo absint( $ids[$i] ); ?>" <?php selected( $ids[$i], $twitter_account ); ?>>@<?php echo wp_strip_all_tags( $titles[$i] ); ?></option>
+				<?php endfor; ?>
 			</select>
-			<a href="#delete" class="ptt-delete button">Delete</a>
 		</div>
 	<?php
 	}
@@ -290,10 +295,10 @@ class pttSettingsPage {
 		 *                     1 => {$term_id}
 		 */
 		foreach ( $_POST['ptt-associations']['accounts'] as $a_key => $a_value ) {
-			foreach ( $a_value as $a_sub_key => $id ) {
-				foreach ( $_POST['ptt-associations']['terms'][$a_key] as $t_key => $taxonomy_name_term_id ) {
+			foreach ( $a_value as $a_sub_key => $twitter_account_id ) {
+				foreach ( $_POST['ptt-associations']['terms'][$twitter_account_id] as $t_key => $taxonomy_name_term_id ) {
 					$term_pieces = explode( ':', $taxonomy_name_term_id );
-					$associations_to_save[ $id ][ $term_pieces[0] ][] = $term_pieces[1];
+					$associations_to_save[ $twitter_account_id ][ $term_pieces[0] ][] = $term_pieces[1];
 				}
 			}
 		}
@@ -311,8 +316,6 @@ class pttSettingsPage {
 				}
 			}
 		}
-
-		//var_dump( $associations_to_save );
 
 		return $_POST;
 	}

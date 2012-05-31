@@ -42,8 +42,8 @@ class pttTwitterAccount {
 			'rewrite' => false,
 			'query_var' => false,
 			'can_export' => false,
-			'supports' => array( 'title', 'editor', 'thumbnail', 'comments', 'post-formats' ), // @todo: adding comments to use as a log of tweets. consider if I really want to do this or not.
-			'taxonomies' => apply_filters( 'ptt_taxonomies', get_taxonomies() )	// Associate all taxonomies with this post type; can be filtered with apply filters
+			'supports' => array( 'title', 'editor', 'thumbnail', 'comments' ), // @todo: adding comments to use as a log of tweets. consider if I really want to do this or not.
+			'taxonomies' => apply_filters( 'ptt_taxonomies', get_taxonomies() )
 		);
 
 		register_post_type( 'ptt-twitter-account', apply_filters( 'ptt_register_post_type', $args ) );
@@ -59,7 +59,7 @@ class pttTwitterAccount {
 		$cleaned_taxonomies = array();
 
 		foreach ( $taxonomy_names as $taxonomy_name ) {
-			if ( 'nav_menu' != $taxonomy_name )
+			if ( ! in_array( $taxonomy_name, array( 'nav_menu', 'post_format', 'link_category' ) ) )
 				$cleaned_taxonomies[] = $taxonomy_name;
 		}
 

@@ -19,13 +19,11 @@ jQuery( document ).ready( function ( $ ) {
 
 	// Setup Chosen for Terms
 	$( '.ptt-chosen-terms' ).chosen( {
-		allow_single_deselect: true,
 		no_results_text: 'No terms match'
 	} );
 
 	// Setup Chosen for Accounts
 	$( '.ptt-chosen-accounts' ).chosen( {
-		allow_single_deselect: true,
 		no_results_text: 'No accounts match'
 	} );
 } );
