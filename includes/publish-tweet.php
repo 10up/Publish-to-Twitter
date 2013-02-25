@@ -32,7 +32,100 @@ class pttPublishTweet {
 	 * @param WP_Post $post
 	 */
 	public function push_post( $post ) {
+		if ( defined( 'WP_IMPORTING' ) && WP_IMPORTING ) {
+			return;
+		}
 
+		$has_been_twittered = get_post_meta( $post->ID, 'has_been_twittered', true );
+		if ( 'yes' === $has_been_twittered ) {
+			return;
+		}
+
+		add_post_meta( $post->ID, 'has_been_twittered', 'yes' );
+
+		if ( 'yes' !== $has_been_twittered ) { // Redundant check
+			setup_postdata( $post );
+
+			// Default Twitter message
+			$message = apply_filters( 'ptt_message', 'New Blog Entry, "[title]" - [link]' );
+
+			$message = apply_filters( 'ptt_pre_proc_message', $message, $post->ID );
+
+			// Get the post tile and apply it to the message
+			$post_title = apply_filters( 'ptt_title', $post->post_title, $post );
+			$message = str_replace( '[title]', $post_title, $message );
+
+			// Get the post URL and apply it to the message
+			$post_url = apply_filters( 'ptt_url', wp_get_shortlink( $post->ID ), $post );
+			$message = str_replace( '[link]', $post_url, $message );
+
+			$message = apply_filters( 'ptt_post_proc_message', $message, $post->ID );
+
+			// Get a comma-delimited list of post categories
+			$cats = wp_get_post_categories( $post->ID );
+			$categories = implode( ',', $cats );
+
+			// Get Twitter accounts to send from
+			$accounts = get_posts(
+				array(
+				     'post_type'   => 'ptt-twitter-account',
+				     'post_status' => 'publish',
+				     'numberposts' => -1,
+				     'category'    => $categories
+				)
+			);
+			$accounts = wp_list_pluck( $accounts, 'post_title' );
+			$accounts = apply_filters( 'ptt_accounts', $accounts, $post );
+
+			foreach( $accounts as $account ) {
+				$update_status = $this->send_message( $message, $account );
+
+				if ( ! $update_status ) {
+					update_post_meta( $post->ID, 'ptt_fail', "api-fail_{$account}" );
+				}
+			}
+
+			wp_reset_postdata();
+		}
+	}
+
+	/**
+	 * Connect to Twitter and push out a message.
+	 *
+	 * @param string $message         Status update to post.
+	 * @param string $twitter_account Twitter handle to send from.
+	 *
+	 * @return bool
+	 */
+	private function send_message( $message, $twitter_account ) {
+		$account = get_page_by_title( $twitter_account, OBJECT, 'ptt-twitter-account' );
+
+		if ( null === $account ) {
+			return false;
+		}
+
+		$oauth = get_post_meta( $account->ID, '_ptt_oauth_token', true );
+		$oauth_secret = get_post_meta( $account->ID, '_ptt_oauth_token_secret', true );
+
+		if ( empty( $oauth ) || empty( $oauth_secret ) ) {
+			return false;
+		}
+
+		if ( ! class_exists( 'TwitterOAuth' ) ) {
+			require_once( __DIR__ . '/library/ptt-twitter-oauth.php' );
+		}
+
+		$connection = new TwitterOAuth( PTT_CONSUMER_KEY, PTT_CONSUMER_SECRET, $oauth, $oauth_secret );
+		$content = $connection->get( 'account/verify_credentials' );
+
+		if ( is_object( $content ) && ! empty( $content->screen_name ) ) {
+			$result = $connection->post( 'statuses/update', array( 'status' => $message ) );
+			if ( is_object( $result ) && ! empty( $result->id ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
-$pttPublishTweet = new pttPublishTweet();
+$GLOBALS['pttPublishTweet'] = new pttPublishTweet();
