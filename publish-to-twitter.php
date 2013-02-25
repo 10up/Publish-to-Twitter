@@ -13,12 +13,6 @@
  */
 define( 'PTT_ROOT' , __DIR__ );
 define( 'PTT_URL' , plugins_url( '/', __FILE__ ) );
-if ( ! defined( 'PTT_CONSUMER_KEY' ) ) {
-	define( 'PTT_CONSUMER_KEY', 'is9GkL8t2goIpSARSTYwXQ' ); // Should be overridden in your theme
-}
-if ( ! defined( 'PTT_CONSUMER_SECRET' ) ) {
-	define( 'PTT_CONSUMER_SECRET', base64_decode( 'algzdzJjbWdRY3hyWmpuQXpHVzNFcGEzYjhRaTJKRDFJcUlmS1ZR' ) ); // Should be overridden in your theme
-}
 
 /**
  * Wrapper to initiate plugin functionality.

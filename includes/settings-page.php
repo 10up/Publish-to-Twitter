@@ -7,14 +7,21 @@ class pttSettingsPage {
 	 *
 	 * @var string
 	 */
-	private $_consumer_key = PTT_CONSUMER_KEY;
+	private $_consumer_key;
 
 	/**
 	 * Consumer secret for the Twitter App.
 	 *
 	 * @var string
 	 */
-	private $_consumer_secret = PTT_CONSUMER_SECRET;
+	private $_consumer_secret;
+
+	/**
+	 * Flag whether or not consumer keys are hardcoded into the application.
+	 *
+	 * @var bool
+	 */
+	private $_keys_hardcoded = false;
 
 	/**
 	 * Holds the oauth_callback URL, which is just the settings page.
@@ -72,6 +79,20 @@ class pttSettingsPage {
 		// Set instance vars
 		$this->_oauth_callback    = admin_url( '/options.php?ptt-action=ptt-publish-to-twitter-auth' );
 		$this->_settings_page_url = admin_url( '/options-general.php?page=ptt-publish-to-twitter' );
+
+		if ( defined( 'PTT_CONSUMER_KEY' ) ) {
+			$this->_consumer_key = PTT_CONSUMER_KEY;
+			$this->_keys_hardcoded = true;
+		} else {
+			$this->_consumer_key = get_option( '_ptt_consumer_key' );
+		}
+
+		if ( defined( 'PTT_CONSUMER_SECRET' ) ) {
+			$this->_consumer_secret = PTT_CONSUMER_SECRET;
+			$this->_keys_hardcoded = true;
+		} else {
+			$this->_consumer_secret = get_option( '_ptt_consumer_secret' );
+		}
 	}
 
 	/**
@@ -106,10 +127,17 @@ class pttSettingsPage {
 	 * Register the settings.
 	 */
 	public function handle_settings() {
+		if ( false === $this->_keys_hardcoded ) {
+			add_settings_section( 'ptt-publish-to-twitter-keys', 'Application Keys', array( $this, 'add_keys_text' ), 'ptt-publish-to-twitter' );
+
+			add_settings_field( 'ptt-publish-to-twitter-consumer-key', 'Consumer Key', array( $this, 'add_consumer_key' ), 'ptt-publish-to-twitter', 'ptt-publish-to-twitter-keys' );
+			add_settings_field( 'ptt-publish-to-twitter-consumer-secret', 'Consumer Secret', array( $this, 'add_consumer_secret' ), 'ptt-publish-to-twitter', 'ptt-publish-to-twitter-keys' );
+		}
+
 		add_settings_section( 'ptt-publish-to-twitter-main-settings', 'Account/Category Associations', array( $this, 'add_accounts_text' ), 'ptt-publish-to-twitter' );
 
 		register_setting( 'ptt-publish-to-twitter-settings', 'ptt-publish-to-twitter-settings', array( $this, 'validate_settings' ) );
-		//add_settings_field( 'ptt-publish-to-twitter-main-settings-associations', 'Accounts and Associated Categories', array( $this, 'add_associations_input' ), 'ptt-publish-to-twitter', 'ptt-publish-to-twitter-main-settings' );
+		add_settings_field( 'ptt-publish-to-twitter-main-settings-associations', 'Accounts and Associated Categories', array( $this, 'add_associations_input' ), 'ptt-publish-to-twitter', 'ptt-publish-to-twitter-main-settings' );
 
 		add_settings_field( 'ptt-publish-to-twitter-main-settings-accounts', 'Available Twitter Accounts', array( $this, 'add_accounts_input' ), 'ptt-publish-to-twitter', 'ptt-publish-to-twitter-main-settings' );
 	}
@@ -120,6 +148,16 @@ class pttSettingsPage {
 	public function add_accounts_text() {
 		?>
     <p>General Settings</p>
+	<?php
+	}
+
+	/**
+	 * Generic text.
+	 */
+	public function add_keys_text() {
+		?>
+        <p>OAuth Settings</p>
+	    <p class="description">You will need to create <a href="https://dev.twitter.com/apps/">an application on Twitter</a> to retrieve your consumer keys.</p>
 	<?php
 	}
 
@@ -159,6 +197,24 @@ class pttSettingsPage {
         <p><em>You must authenticate one Twitter account in order to begin associating accounts with categories.</em>
         </p>
 			<?php endif;
+	}
+
+	/**
+	 * Print the consumer key field.
+ 	 */
+	public function add_consumer_key() {
+		?>
+		<input name="_ptt_consumer_key" id="_ptt_consumer_key" type="text" class="regular-text" value="<?php echo (false === $this->_consumer_key ? '' : $this->_consumer_key); ?>" />
+	<?php
+	}
+
+	/**
+	 * Print the consumer secret field.
+	 */
+	public function add_consumer_secret() {
+		?>
+        <input name="_ptt_consumer_secret" id="_ptt_consumer_secret" type="text" class="regular-text" value="<?php echo (false === $this->_consumer_secret ? '' : $this->_consumer_secret); ?>" />
+	<?php
 	}
 
 	/**
@@ -265,7 +321,7 @@ class pttSettingsPage {
 	public function validate_settings( $input ) {
 		$sanitized = array();
 
-
+		$this->save_oauth();
 		$this->save_associations();
 
 		// Verify that we have the same number of inputs for category and twitter; if not, there is a major issue
@@ -331,6 +387,15 @@ class pttSettingsPage {
 		}
 
 		return $_POST;
+	}
+
+	private function save_oauth() {
+		if ( ! isset( $_POST['_ptt_consumer_key'] ) || ! isset( $_POST['_ptt_consumer_secret'] ) ) {
+			return false;
+		}
+
+		update_option( '_ptt_consumer_key', sanitize_text_field( $_POST['_ptt_consumer_key'] ) );
+		update_option( '_ptt_consumer_secret', sanitize_text_field( $_POST['_ptt_consumer_secret'] ) );
 	}
 
 	/**

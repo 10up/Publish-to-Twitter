@@ -3,12 +3,39 @@
  * Handle actually publishing posts to Twitter.
  */
 class pttPublishTweet {
+
+	/**
+	 * Consumer key for the Twitter App.
+	 *
+	 * @var string
+	 */
+	private $_consumer_key;
+
+	/**
+	 * Consumer secret for the Twitter App.
+	 *
+	 * @var string
+	 */
+	private $_consumer_secret;
+
 	/**
 	 * Wireup functionality.
 	 */
 	public function __construct() {
 		add_action( 'ptt_publish_tweet',      array( $this, 'push_post' ) );
 		add_action( 'transition_post_status', array( $this, 'transition_post_status' ), 10, 3 );
+
+		if ( defined( 'PTT_CONSUMER_KEY' ) ) {
+			$this->_consumer_key = PTT_CONSUMER_KEY;
+		} else {
+			$this->_consumer_key = get_option( '_ptt_consumer_key' );
+		}
+
+		if ( defined( 'PTT_CONSUMER_SECRET' ) ) {
+			$this->_consumer_secret = PTT_CONSUMER_SECRET;
+		} else {
+			$this->_consumer_secret = get_option( '_ptt_consumer_secret' );
+		}
 	}
 
 	/**
@@ -115,7 +142,7 @@ class pttPublishTweet {
 			require_once( __DIR__ . '/library/ptt-twitter-oauth.php' );
 		}
 
-		$connection = new TwitterOAuth( PTT_CONSUMER_KEY, PTT_CONSUMER_SECRET, $oauth, $oauth_secret );
+		$connection = new TwitterOAuth( $this->_consumer_key, $this->_consumer_secret, $oauth, $oauth_secret );
 		$content = $connection->get( 'account/verify_credentials' );
 
 		if ( is_object( $content ) && ! empty( $content->screen_name ) ) {
