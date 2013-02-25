@@ -175,7 +175,7 @@ class pttSettingsPage {
 		$associated_terms = wp_get_object_terms( $twitter_account, $taxonomies );
 		$associated_term_ids = wp_list_pluck( $associated_terms, 'term_id' )
 		?>
-    <div class="ptt-twitter-category-pairing">
+    <div class="ptt-twitter-category-pairing"><p>
         <em>Posts in:</em>&nbsp;
 
         <select class="ptt-chosen-terms" name="ptt-associations[terms][<?php echo absint( $twitter_account ); ?>][]"
@@ -201,7 +201,7 @@ class pttSettingsPage {
                 @<?php echo wp_strip_all_tags( $titles[$i] ); ?></option>
 			<?php endfor; ?>
         </select>
-    </div>
+    </p></div>
 		<?php
 	}
 
@@ -223,8 +223,12 @@ class pttSettingsPage {
                 class="button">Remove Account</a>
         </p>
 			<?php endwhile; endif; ?>
-    <a href="<?php echo add_query_arg( array( 'ptt-twitter' => wp_create_nonce( 'ptt-authenticate' ), 'action' => 'update' ), admin_url( '/options.php' ) ); ?>">Authorize
-        Twitter Account</a>
+    <a href="<?php echo add_query_arg( array( 'ptt-twitter' => wp_create_nonce( 'ptt-authenticate' ), 'action' => 'update' ), admin_url( '/options.php' ) ); ?>">
+	    Authorize Twitter Account
+    </a>
+	<p class="description">
+		If you are currently logged in to Twitter, you will be authorizing your current account.
+	</p>
 		<?php
 	}
 
@@ -355,6 +359,13 @@ class pttSettingsPage {
         .ptt-chosen-accounts {
             width: 200px;
         }
+        .ptt-twitter-category-pairing em,
+        .ptt-twitter-category-pairing .chzn-container {
+	        vertical-align: text-bottom;
+        }
+        .ptt-twitter-category-pairing .chzn-container-multi .chzn-choices .search-field input {
+		    height: 26px;
+	    }
     </style>
 	<?php
 	}
@@ -367,8 +378,9 @@ class pttSettingsPage {
 	 * @return bool
 	 */
 	public function get_authorization() {
-		if ( ! isset( $_GET['ptt-twitter'] ) || ! wp_verify_nonce( $_GET['ptt-twitter'], 'ptt-authenticate' ) )
+		if ( ! isset( $_GET['ptt-twitter'] ) || ! wp_verify_nonce( $_GET['ptt-twitter'], 'ptt-authenticate' ) ) {
 			return false;
+		}
 
 		// Load library
 		$this->_include_twitteroauth();
@@ -561,7 +573,9 @@ class pttSettingsPage {
 	public function display_twitter_errors() {
 		$settings_errors = get_transient( 'ptt-twitter-error-' . get_current_user_id() );
 
-		if ( ! is_array( $settings_errors ) ) return;
+		if ( ! is_array( $settings_errors ) ) {
+			return;
+		}
 
 		delete_transient( 'ptt-twitter-error-' . get_current_user_id() );
 		$output = '';
