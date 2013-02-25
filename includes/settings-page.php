@@ -36,7 +36,7 @@ class pttSettingsPage {
 	 * @var object
 	 */
 	private $_twitter_accounts;
-	
+
 	/**
 	 * Holds errors related to Twitter interaction.
 	 *
@@ -70,7 +70,7 @@ class pttSettingsPage {
 		add_action( 'admin_print_styles', array( $this, 'admin_print_styles' ) );
 
 		// Set instance vars
-		$this->_oauth_callback = admin_url( '/options.php?ptt-action=ptt-publish-to-twitter-auth' );
+		$this->_oauth_callback    = admin_url( '/options.php?ptt-action=ptt-publish-to-twitter-auth' );
 		$this->_settings_page_url = admin_url( '/options-general.php?page=ptt-publish-to-twitter' );
 	}
 
@@ -85,20 +85,20 @@ class pttSettingsPage {
 	 * Write the submenu page.
 	 */
 	public function submenu_page() {
-	?>
-		<div class="wrap">
-			<?php screen_icon(); ?>
-			<h2>Publish to Twitter</h2>
+		?>
+    <div class="wrap">
+		<?php screen_icon(); ?>
+        <h2>Publish to Twitter</h2>
 
-			<form action="options.php" method="post">
+        <form action="options.php" method="post">
 
-				<?php settings_fields( 'ptt-publish-to-twitter-settings' ); ?>
-				<?php do_settings_sections( 'ptt-publish-to-twitter' ); ?>
+			<?php settings_fields( 'ptt-publish-to-twitter-settings' ); ?>
+			<?php do_settings_sections( 'ptt-publish-to-twitter' ); ?>
 
-				<?php wp_nonce_field( 'ptt-save-associations', 'ptt-save-associations-nonce' ); ?>
-				<br /><input type="submit" value="Save Settings" name="submit" class="button-primary" />
-			</form>
-		</div>
+			<?php wp_nonce_field( 'ptt-save-associations', 'ptt-save-associations-nonce' ); ?>
+            <br/><input type="submit" value="Save Settings" name="submit" class="button-primary"/>
+        </form>
+    </div>
 	<?php
 	}
 
@@ -118,8 +118,8 @@ class pttSettingsPage {
 	 * Generic text.
 	 */
 	public function add_accounts_text() {
-	?>
-		<p>General Settings</p>
+		?>
+    <p>General Settings</p>
 	<?php
 	}
 
@@ -139,12 +139,12 @@ class pttSettingsPage {
 		if ( $twitter_accounts->have_posts() ) : ?>
 			<div id="ptt-twitter-category-pairings">
 				<?php while ( $twitter_accounts->have_posts() ) : $twitter_accounts->the_post(); ?>
-					<?php $this->_account_category_association_selects( get_the_ID() ); ?>
+				<?php $this->_account_category_association_selects( get_the_ID() ); ?>
 				<?php endwhile; ?>
 
 
 
-				<?php /*if ( $associations = get_option( 'ptt-publish-to-twitter-settings' ) ) : ?>
+			<?php /*if ( $associations = get_option( 'ptt-publish-to-twitter-settings' ) ) : ?>
 				<?php foreach ( $associations as $key => $pairing ) : ?>
 					<?php $this->_account_category_association_selects( $twitter_accounts, $pairing['category_id'], $pairing['twitter_account_id'] ); ?>
 					<?php endforeach; ?>
@@ -153,12 +153,14 @@ class pttSettingsPage {
 				<?php endif; ?>
 			</div>
 			<a href="#add" class="ptt-add-another button">Add Association</a>
-			<?php $this->_account_category_association_selects( $twitter_accounts, 0, 0, true ); */?>
-		<?php else : ?>
-			<p><em>You must authenticate one Twitter account in order to begin associating accounts with categories.</em></p>
-		<?php endif;
+			<?php $this->_account_category_association_selects( $twitter_accounts, 0, 0, true ); */
+			?>
+			<?php else : ?>
+        <p><em>You must authenticate one Twitter account in order to begin associating accounts with categories.</em>
+        </p>
+			<?php endif;
 	}
-	
+
 	/**
 	 * Generates the category/Twitter account pairing interface.
 	 *
@@ -168,37 +170,39 @@ class pttSettingsPage {
 	 *
 	 * @param int $twitter_account
 	 */
-	private function _account_category_association_selects( $twitter_account  ) {
-		$taxonomies = get_object_taxonomies( 'ptt-twitter-account' );
+	private function _account_category_association_selects( $twitter_account ) {
+		$taxonomies       = get_object_taxonomies( 'ptt-twitter-account' );
 		$associated_terms = wp_get_object_terms( $twitter_account, $taxonomies );
 		$associated_term_ids = wp_list_pluck( $associated_terms, 'term_id' )
-	?>
-		<div class="ptt-twitter-category-pairing">
-			<em>Posts in:</em>&nbsp;
+		?>
+    <div class="ptt-twitter-category-pairing">
+        <em>Posts in:</em>&nbsp;
 
-			<select class="ptt-chosen-terms" name="ptt-associations[terms][<?php echo absint( $twitter_account ); ?>][]" multiple="multiple" data-placeholder="Select some terms">
-				<option value="-99"></option>
+        <select class="ptt-chosen-terms" name="ptt-associations[terms][<?php echo absint( $twitter_account ); ?>][]"
+                multiple="multiple" data-placeholder="Select some terms">
+            <option value="-99"></option>
 
-				<?php foreach ( get_object_taxonomies( 'ptt-twitter-account' ) as $taxonomy ) : ?>
-					<optgroup label="Taxonomy : <?php echo esc_attr( $taxonomy ); ?>">
-						<?php foreach ( get_terms( $taxonomy, array( 'hide_empty' => false ) ) as $term ) : ?>
-							<option value="<?php echo esc_attr( $taxonomy ) . ':' . absint( $term->term_id ); ?>" <?php selected( in_array( $term->term_id, $associated_term_ids ) ); ?>><?php echo esc_html( $term->name ); ?></option>
-						<?php endforeach; ?>
-					</optgroup>
+			<?php foreach ( get_object_taxonomies( 'ptt-twitter-account' ) as $taxonomy ) : ?>
+            <optgroup label="Taxonomy : <?php echo esc_attr( $taxonomy ); ?>">
+				<?php foreach ( get_terms( $taxonomy, array( 'hide_empty' => false ) ) as $term ) : ?>
+                <option value="<?php echo esc_attr( $taxonomy ) . ':' . absint( $term->term_id ); ?>" <?php selected( in_array( $term->term_id, $associated_term_ids ) ); ?>><?php echo esc_html( $term->name ); ?></option>
 				<?php endforeach; ?>
+            </optgroup>
+			<?php endforeach; ?>
 
-			</select>
+        </select>
 
-			&nbsp;<em>automatically Tweet to:</em>&nbsp;
-			<select class="ptt-chosen-accounts" name="ptt-associations[accounts][0][]" data-placeholder="Select an account">
-				<option value="-99"></option>
-				<?php $ids = wp_list_pluck( $this->_retrieve_twitter_accounts_query()->posts, 'ID' ); $titles = wp_list_pluck( $this->_retrieve_twitter_accounts_query()->posts, 'post_title' ); ?>
-				<?php for ( $i = 0; $i < count( $ids ); $i++ ) : ?>
-					<option value="<?php echo absint( $ids[$i] ); ?>" <?php selected( $ids[$i], $twitter_account ); ?>>@<?php echo wp_strip_all_tags( $titles[$i] ); ?></option>
-				<?php endfor; ?>
-			</select>
-		</div>
-	<?php
+        &nbsp;<em>automatically Tweet to:</em>&nbsp;
+        <select class="ptt-chosen-accounts" name="ptt-associations[accounts][0][]" data-placeholder="Select an account">
+            <option value="-99"></option>
+			<?php $ids = wp_list_pluck( $this->_retrieve_twitter_accounts_query()->posts, 'ID' ); $titles = wp_list_pluck( $this->_retrieve_twitter_accounts_query()->posts, 'post_title' ); ?>
+			<?php for ( $i = 0; $i < count( $ids ); $i ++ ) : ?>
+            <option value="<?php echo absint( $ids[$i] ); ?>" <?php selected( $ids[$i], $twitter_account ); ?>>
+                @<?php echo wp_strip_all_tags( $titles[$i] ); ?></option>
+			<?php endfor; ?>
+        </select>
+    </div>
+		<?php
 	}
 
 
@@ -211,14 +215,17 @@ class pttSettingsPage {
 	public function add_accounts_input() {
 		$twitter_accounts = $this->_retrieve_twitter_accounts_query();
 
-		if ( $twitter_accounts->have_posts() ) : while( $twitter_accounts->have_posts() ) : $twitter_accounts->the_post(); ?>
-			<p>
-				<strong>@<?php the_title(); ?></strong>
-				&nbsp;&nbsp;<a href="<?php echo add_query_arg( array( 'ptt-twitter' => wp_create_nonce( 'ptt-delete-account' ), 'ptt-twitter-id' => get_the_ID() ), admin_url( '/options.php' ) ); ?>" class="button">Remove Account</a>
-			</p>
-		<?php endwhile; endif; ?>
-		<a href="<?php echo add_query_arg( array( 'ptt-twitter' => wp_create_nonce( 'ptt-authenticate' ), 'action' => 'update' ),  admin_url( '/options.php' ) ); ?>">Authorize Twitter Account</a>
-	<?php
+		if ( $twitter_accounts->have_posts() ) : while ( $twitter_accounts->have_posts() ) : $twitter_accounts->the_post(); ?>
+        <p>
+            <strong>@<?php the_title(); ?></strong>
+            &nbsp;&nbsp;<a
+                href="<?php echo add_query_arg( array( 'ptt-twitter' => wp_create_nonce( 'ptt-delete-account' ), 'ptt-twitter-id' => get_the_ID() ), admin_url( '/options.php' ) ); ?>"
+                class="button">Remove Account</a>
+        </p>
+			<?php endwhile; endif; ?>
+    <a href="<?php echo add_query_arg( array( 'ptt-twitter' => wp_create_nonce( 'ptt-authenticate' ), 'action' => 'update' ), admin_url( '/options.php' ) ); ?>">Authorize
+        Twitter Account</a>
+		<?php
 	}
 
 	/**
@@ -233,11 +240,13 @@ class pttSettingsPage {
 		if ( is_object( $this->_twitter_accounts ) )
 			return $this->_twitter_accounts;
 
-		$this->_twitter_accounts = new WP_Query( array(
-			'post_type' => 'ptt-twitter-account',
-			'posts_per_page' => apply_filters( 'ptt_add_accounts_input_ppp', 100 ),
-			'no_found_rows' => false
-		) );
+		$this->_twitter_accounts = new WP_Query(
+			array(
+			     'post_type'      => 'ptt-twitter-account',
+			     'posts_per_page' => apply_filters( 'ptt_add_accounts_input_ppp', 100 ),
+			     'no_found_rows'  => false
+			)
+		);
 
 		return $this->_twitter_accounts;
 	}
@@ -246,22 +255,22 @@ class pttSettingsPage {
 	 * Setting validation.
 	 *
 	 * @param $input
+	 *
 	 * @return array
 	 */
 	public function validate_settings( $input ) {
 		$sanitized = array();
 
 
-
 		$this->save_associations();
 
 		// Verify that we have the same number of inputs for category and twitter; if not, there is a major issue
 		$number_of_inputs = ( isset( $input['category'] ) && isset( $input['twitter'] ) && count( $input['category'] ) == count( $input['twitter'] ) ) ? count( $input['category'] ) : 0;
-		for ( $i = 0; $i < $number_of_inputs; $i++ ) {
+		for ( $i = 0; $i < $number_of_inputs; $i ++ ) {
 			// Only accept valid categories and twitter account ids
 			if ( '-1' != $input['category'][$i] && '-99' != $input['twitter'][$i] && is_object( get_term( $input['category'][$i], 'category' ) ) && array_key_exists( $input['twitter'][$i], get_option( 'ptt_twitter_accounts' ) ) ) {
 				$sanitized[] = array(
-					'category_id' => absint( $input['category'][$i] ),
+					'category_id'        => absint( $input['category'][$i] ),
 					'twitter_account_id' => absint( $input['twitter'][$i] )
 				);
 			}
@@ -297,8 +306,8 @@ class pttSettingsPage {
 		foreach ( $_POST['ptt-associations']['accounts'] as $a_key => $a_value ) {
 			foreach ( $a_value as $a_sub_key => $twitter_account_id ) {
 				foreach ( $_POST['ptt-associations']['terms'][$twitter_account_id] as $t_key => $taxonomy_name_term_id ) {
-					$term_pieces = explode( ':', $taxonomy_name_term_id );
-					$associations_to_save[ $twitter_account_id ][ $term_pieces[0] ][] = $term_pieces[1];
+					$term_pieces                                                  = explode( ':', $taxonomy_name_term_id );
+					$associations_to_save[$twitter_account_id][$term_pieces[0]][] = $term_pieces[1];
 				}
 			}
 		}
@@ -333,12 +342,20 @@ class pttSettingsPage {
 	 */
 	public function admin_print_styles() {
 		wp_enqueue_style( 'ptt-chosen', PTT_URL . 'css/chosen.css', array(), '0.9.8' );
-	?>
-		<style type="text/css">
-			.ptt-twitter-category-pairing { margin-bottom: 5px; }
-			.ptt-chosen-terms { width: 200px; }
-			.ptt-chosen-accounts { width: 200px; }
-		</style>
+		?>
+    <style type="text/css">
+        .ptt-twitter-category-pairing {
+            margin-bottom: 5px;
+        }
+
+        .ptt-chosen-terms {
+            width: 200px;
+        }
+
+        .ptt-chosen-accounts {
+            width: 200px;
+        }
+    </style>
 	<?php
 	}
 
@@ -365,7 +382,7 @@ class pttSettingsPage {
 		// Get request tokens to save temporarily
 		if ( ctype_alnum( $request_token['oauth_token'] ) && ctype_alnum( $request_token['oauth_token_secret'] ) ) {
 			$temp_token = array(
-				'oauth_token' => $request_token['oauth_token'],
+				'oauth_token'        => $request_token['oauth_token'],
 				'oauth_token_secret' => $request_token['oauth_token_secret']
 			);
 			update_option( 'ptt_twitter_temp_token', $temp_token );
@@ -396,16 +413,16 @@ class pttSettingsPage {
 
 				// We have all of the information needed to make the request to get the user details, so make it
 				$this->_include_twitteroauth();
-				$connection = new TwitterOAuth( $this->_consumer_key, $this->_consumer_secret, $temp_token['oauth_token'], $temp_token['oauth_token_secret'] );
+				$connection   = new TwitterOAuth( $this->_consumer_key, $this->_consumer_secret, $temp_token['oauth_token'], $temp_token['oauth_token_secret'] );
 				$access_token = $connection->getAccessToken( $_GET['oauth_verifier'] );
-				$user = $connection->get( 'account/verify_credentials' );
+				$user         = $connection->get( 'account/verify_credentials' );
 
 				// Grab the user info and dump it in the DB
 				if ( is_object( $user ) && is_array( $access_token ) ) {
 					// Note that because Twitter's ID number can be so big, I'm not using absint in order to avoid a potential issue with 32-bit systems max integer range
-					$user_id = isset( $access_token['user_id'] ) && is_numeric( $access_token['user_id'] ) && $access_token['user_id'] > 0 ? $access_token['user_id'] : 0;
-					$screen_name = isset( $access_token['screen_name'] ) ? sanitize_title( $access_token['screen_name'] ) : false;
-					$oauth_token = isset( $access_token['oauth_token'] ) ? $this->_validate_twitter_oauth_token( $access_token['oauth_token'], $user_id ) : false;
+					$user_id            = isset( $access_token['user_id'] ) && is_numeric( $access_token['user_id'] ) && $access_token['user_id'] > 0 ? $access_token['user_id'] : 0;
+					$screen_name        = isset( $access_token['screen_name'] ) ? sanitize_title( $access_token['screen_name'] ) : false;
+					$oauth_token        = isset( $access_token['oauth_token'] ) ? $this->_validate_twitter_oauth_token( $access_token['oauth_token'], $user_id ) : false;
 					$oauth_token_secret = isset( $access_token['oauth_token_secret'] ) && ctype_alnum( $access_token['oauth_token_secret'] ) ? $access_token['oauth_token_secret'] : false;
 
 					// If everything is properly set, update the option
@@ -416,18 +433,18 @@ class pttSettingsPage {
 
 						$post_data = array(
 							'post_status' => 'publish',
-							'post_type' => 'ptt-twitter-account',
-							'post_title' => $screen_name
+							'post_type'   => 'ptt-twitter-account',
+							'post_title'  => $screen_name
 						);
 
 						if ( $post_id = wp_insert_post( $post_data ) ) {
-							$updated_oauth = update_post_meta( $post_id, '_ptt_oauth_token', $oauth_token ) ? true : false;
+							$updated_oauth        = update_post_meta( $post_id, '_ptt_oauth_token', $oauth_token ) ? true : false;
 							$updated_oauth_secret = update_post_meta( $post_id, '_ptt_oauth_token_secret', $oauth_token_secret ) ? true : false;
-							$updated_user_id = update_post_meta( $post_id, '_ptt_user_id', $user_id ) ? true : false;
+							$updated_user_id      = update_post_meta( $post_id, '_ptt_user_id', $user_id ) ? true : false;
 
 							// Since the tokens are the most important part of this process, we need to verify that they saved
 							if ( $updated_oauth && $updated_oauth_secret && $updated_user_id ) {
-								$this->_set_message_and_redirect( 'ptt-twitter', '400', 'The user @' . $screen_name. ' has been authorized to use with this site!', 'updated' );
+								$this->_set_message_and_redirect( 'ptt-twitter', '400', 'The user @' . $screen_name . ' has been authorized to use with this site!', 'updated' );
 							} else {
 								// Something went wrong; clean up the post and print error message
 								wp_delete_post( $post_id, true );
@@ -492,6 +509,7 @@ class pttSettingsPage {
 	 *
 	 * @param $oauth_token
 	 * @param $id
+	 *
 	 * @return bool
 	 */
 	private function _validate_twitter_oauth_token( $oauth_token, $id ) {
@@ -523,9 +541,9 @@ class pttSettingsPage {
 	private function _add_twitter_error( $setting, $code, $message, $type ) {
 		$this->_twitter_errors[] = array(
 			'setting' => $setting,
-			'code' => $code,
+			'code'    => $code,
 			'message' => $message,
-			'type' => $type
+			'type'    => $type
 		);
 	}
 
@@ -548,7 +566,7 @@ class pttSettingsPage {
 		delete_transient( 'ptt-twitter-error-' . get_current_user_id() );
 		$output = '';
 		foreach ( $settings_errors as $key => $details ) {
-			$css_id = 'setting-error-' . absint( $details['code'] );
+			$css_id    = 'setting-error-' . absint( $details['code'] );
 			$css_class = esc_html( $details['type'] ) . ' settings-error';
 			$output .= "<div id='$css_id' class='$css_class'> \n";
 			$output .= "<p><strong>" . wp_kses_data( $details['message'] ) . "</strong></p>";
@@ -574,4 +592,5 @@ class pttSettingsPage {
 		exit();
 	}
 }
+
 $pttSettingsPage = new pttSettingsPage();
