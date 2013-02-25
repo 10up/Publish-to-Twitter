@@ -74,19 +74,18 @@ class pttPublishTweet {
 			setup_postdata( $post );
 
 			// Default Twitter message
-			$message = apply_filters( 'ptt_message', 'New Blog Entry, "[title]" - [link]' );
+			$message = apply_filters( 'ptt_message', '[title] [link] by [twitname]' );
 
 			$message = apply_filters( 'ptt_pre_proc_message', $message, $post->ID );
 
 			// Get the post tile and apply it to the message
-			$post_title = apply_filters( 'ptt_title', $post->post_title, $post );
-			$message = str_replace( '[title]', $post_title, $message );
+			$post_title = apply_filters( 'ptt_title', $post->post_title, $message, $post );
 
 			// Get the post URL and apply it to the message
 			$post_url = apply_filters( 'ptt_url', wp_get_shortlink( $post->ID ), $post );
-			$message = str_replace( '[link]', $post_url, $message );
 
-			$message = apply_filters( 'ptt_post_proc_message', $message, $post->ID );
+			// Get any hashtags that need to be applied
+			$hashtags = apply_filters( 'ptt_hashtags', '', $post );
 
 			// Get a comma-delimited list of post categories
 			$cats = wp_get_post_categories( $post->ID );
@@ -104,8 +103,23 @@ class pttPublishTweet {
 			$accounts = wp_list_pluck( $accounts, 'post_title' );
 			$accounts = apply_filters( 'ptt_accounts', $accounts, $post );
 
+
 			foreach( $accounts as $account ) {
-				$update_status = $this->send_message( $message, $account );
+				$twitname = apply_filters( 'ptt_twitname', $account, $post );
+
+				// Link and Twitter handle MUST be full text. Title, however, can be shortened
+				$twitmessage = str_replace( '[link]', $post_url, $message );
+				$twitmessage = str_replace( '[twitname]', $twitname, $twitmessage );
+
+				if ( strlen( $post_title ) + strlen( $twitmessage ) + strlen( $hashtags ) > 147 ) { // 147 since we're replacing [title]
+					$post_title = substr( $post_title, 0, 146 - strlen( $twitmessage ) - strlen ( $hashtags ) ) . "…"; // 146 to make room for ellipses
+				}
+
+				$twitmessage = str_replace( '[title]', $post_title, $twitmessage ) . $hashtags;
+
+				$twitmessage = apply_filters( 'ptt_post_proc_message', $twitmessage, $post->ID );
+
+				$update_status = $this->send_message( $twitmessage, $account );
 
 				if ( ! $update_status ) {
 					update_post_meta( $post->ID, 'ptt_fail', "api-fail_{$account}" );
