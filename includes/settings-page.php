@@ -109,7 +109,7 @@ class pttSettingsPage {
 		add_settings_section( 'ptt-publish-to-twitter-main-settings', 'Account/Category Associations', array( $this, 'add_accounts_text' ), 'ptt-publish-to-twitter' );
 
 		register_setting( 'ptt-publish-to-twitter-settings', 'ptt-publish-to-twitter-settings', array( $this, 'validate_settings' ) );
-		add_settings_field( 'ptt-publish-to-twitter-main-settings-associations', 'Accounts and Associated Categories', array( $this, 'add_associations_input' ), 'ptt-publish-to-twitter', 'ptt-publish-to-twitter-main-settings' );
+		//add_settings_field( 'ptt-publish-to-twitter-main-settings-associations', 'Accounts and Associated Categories', array( $this, 'add_associations_input' ), 'ptt-publish-to-twitter', 'ptt-publish-to-twitter-main-settings' );
 
 		add_settings_field( 'ptt-publish-to-twitter-main-settings-accounts', 'Available Twitter Accounts', array( $this, 'add_accounts_input' ), 'ptt-publish-to-twitter', 'ptt-publish-to-twitter-main-settings' );
 	}
