@@ -33,9 +33,9 @@ class pttTwitterAccount {
 				'not_found'          => __( 'No Twitter accounts found', 'ptt-publish-to-twitter' ),
 				'not_found_in_trash' => __( 'No Twitter accounts found in Trash', 'ptt-publish-to-twitter' ),
 				'parent_item_colon'  => '',
-				'menu_name'          => 'Twitter Accounts'
+				'menu_name'          => __( 'Twitter Accounts', 'ptt-publish-to-twitter' ),
 			),
-			'description'         => 'Twitter accounts associated with the site.',
+			'description'         => __( 'Twitter accounts associated with the site.', 'ptt-publish-to-twitter' ),
 			'public'              => ( defined( 'WP_DEBUG' ) && WP_DEBUG ),
 			'publicly_queryable'  => false,
 			'exclude_from_search' => true,
