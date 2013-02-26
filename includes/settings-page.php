@@ -490,7 +490,7 @@ class pttSettingsPage {
 
 				// We have all of the information needed to make the request to get the user details, so make it
 				$this->_include_twitteroauth();
-				$connection   = new TwitterOAuth( $this->_consumer_key, $this->_consumer_secret, $temp_token['oauth_token'], $temp_token['oauth_token_secret'] );
+				$connection   = new pttTwitterOAuth( $this->_consumer_key, $this->_consumer_secret, $temp_token['oauth_token'], $temp_token['oauth_token_secret'] );
 				$access_token = $connection->getAccessToken( $_GET['oauth_verifier'] );
 				$user         = $connection->get( 'account/verify_credentials' );
 
@@ -575,7 +575,7 @@ class pttSettingsPage {
 	 * paid to how I'm including this as I cannot account for things I cannot mimick in dev.
 	 */
 	private function _include_twitteroauth() {
-		if ( ! class_exists( 'TwitterOAuth' ) )
+		if ( ! class_exists( 'pttTwitterOAuth' ) )
 			require_once( __DIR__ . '/library/ptt-twitter-oauth.php' );
 	}
 
