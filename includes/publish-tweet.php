@@ -74,7 +74,8 @@ class pttPublishTweet {
 			setup_postdata( $post );
 
 			// Default Twitter message
-			$message = apply_filters( 'ptt_message', '[title] [link] by [twitname]' );
+			$message = sprintf( _x( '%1$s %2$s by %3$s', '[post title] [post link] by [twitter username]', 'ptt-publish-to-twitter' ), '[title]', '[link]', '[twitname]' );
+			$message = apply_filters( 'ptt_message', $message );
 
 			$message = apply_filters( 'ptt_pre_proc_message', $message, $post->ID );
 
