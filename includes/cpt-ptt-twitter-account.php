@@ -59,8 +59,10 @@ class pttTwitterAccount {
 		$cleaned_taxonomies = array();
 
 		foreach ( $taxonomy_names as $taxonomy_name ) {
-			if ( ! in_array( $taxonomy_name, array( 'nav_menu', 'post_format', 'link_category' ) ) )
+			$taxonomy = get_taxonomy( $taxonomy_name );
+			if ( $taxonomy && $taxonomy->show_ui ) {
 				$cleaned_taxonomies[] = $taxonomy_name;
+			}
 		}
 
 		return $cleaned_taxonomies;
