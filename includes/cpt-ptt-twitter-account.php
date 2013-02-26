@@ -32,7 +32,6 @@ class pttTwitterAccount {
 				'search_items'       => __( 'Search Twitter Accounts', 'ptt-publish-to-twitter' ),
 				'not_found'          => __( 'No Twitter accounts found', 'ptt-publish-to-twitter' ),
 				'not_found_in_trash' => __( 'No Twitter accounts found in Trash', 'ptt-publish-to-twitter' ),
-				'parent_item_colon'  => '',
 				'menu_name'          => __( 'Twitter Accounts', 'ptt-publish-to-twitter' ),
 			),
 			'description'         => __( 'Twitter accounts associated with the site.', 'ptt-publish-to-twitter' ),
