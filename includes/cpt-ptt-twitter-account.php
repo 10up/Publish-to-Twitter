@@ -21,9 +21,9 @@ class pttTwitterAccount {
 	public function register_post_type() {
 		$args = array(
 			'labels'              => array(
-				'name'               => _x( 'Twitter Accounts', 'ptt-publish-to-twitter' ),
-				'singular_name'      => _x( 'Twitter Account', 'ptt-publish-to-twitter' ),
-				'add_new'            => _x( 'Add New', 'ptt-publish-to-twitter' ),
+				'name'               => __( 'Twitter Accounts', 'ptt-publish-to-twitter' ),
+				'singular_name'      => __( 'Twitter Account', 'ptt-publish-to-twitter' ),
+				'add_new'            => _x( 'Add New', 'Label for "add new twitter account"', 'ptt-publish-to-twitter' ),
 				'add_new_item'       => __( 'Add New Twitter Account', 'ptt-publish-to-twitter' ),
 				'edit_item'          => __( 'Edit Twitter Account', 'ptt-publish-to-twitter' ),
 				'new_item'           => __( 'New Twitter Account', 'ptt-publish-to-twitter' ),
