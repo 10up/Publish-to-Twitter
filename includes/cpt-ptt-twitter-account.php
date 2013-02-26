@@ -36,7 +36,7 @@ class pttTwitterAccount {
 				'menu_name'          => 'Twitter Accounts'
 			),
 			'description'         => 'Twitter accounts associated with the site.',
-			'public'              => defined( 'WP_DEBUG' ) && WP_DEBUG ? true : false,
+			'public'              => ( defined( 'WP_DEBUG' ) && WP_DEBUG ),
 			'publicly_queryable'  => false,
 			'exclude_from_search' => true,
 			'rewrite'             => false,
