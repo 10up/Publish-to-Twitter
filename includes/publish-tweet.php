@@ -152,11 +152,11 @@ class pttPublishTweet {
 			return false;
 		}
 
-		if ( ! class_exists( 'TwitterOAuth' ) ) {
+		if ( ! class_exists( 'pttTwitterOAuth' ) ) {
 			require_once( __DIR__ . '/library/ptt-twitter-oauth.php' );
 		}
 
-		$connection = new TwitterOAuth( $this->_consumer_key, $this->_consumer_secret, $oauth, $oauth_secret );
+		$connection = new pttTwitterOAuth( $this->_consumer_key, $this->_consumer_secret, $oauth, $oauth_secret );
 		$content = $connection->get( 'account/verify_credentials' );
 
 		if ( is_object( $content ) && ! empty( $content->screen_name ) ) {

@@ -7,15 +7,18 @@ if ( ! class_exists( 'TwitterOAuth' ) )
  */
 class pttTwitterOAuth extends TwitterOAuth {
 
+	/* Set up the API root URL. */
+	public $host = 'https://api.twitter.com/1.1/';
+
 	public $response_body;
 
 	/**
 	 * Call the parent constructor.
 	 *
-	 * @param $consumer_key
-	 * @param $consumer_secret
-	 * @param null $oauth_token
-	 * @param null $oauth_token_secret
+	 * @param string      $consumer_key
+	 * @param string      $consumer_secret
+	 * @param string|null $oauth_token
+	 * @param string|null $oauth_token_secret
 	 */
 	public function __construct( $consumer_key, $consumer_secret, $oauth_token = NULL, $oauth_token_secret = NULL ) {
 		parent::__construct( $consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret );
@@ -33,12 +36,12 @@ class pttTwitterOAuth extends TwitterOAuth {
 		$this->http_info = array();
 
 		$args = array(
-			'method' => $method,
+			'method'     => $method,
 			'user-agent' => $this->useragent,
-			'timeout' => $this->timeout,		// This sets both CONNECTTIMEOUT and TIMEOUT
-			'headers' => array( 'Expect:' ),
-			'sslverify' => $this->ssl_verifypeer,
-			'postfields' => ! empty( $postfields ) ? $postfields : ''
+			'timeout'    => $this->timeout, // This sets both CONNECTTIMEOUT and TIMEOUT
+			'headers'    => array( 'Expect:' ),
+			'sslverify'  => $this->ssl_verifypeer,
+			'body'       => ! empty( $postfields ) ? $postfields : ''
 		);
 
 		$response = wp_remote_request( $url, $args );
