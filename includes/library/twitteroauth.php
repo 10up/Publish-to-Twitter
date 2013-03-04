@@ -13,7 +13,9 @@
  * Andy Smith found at http://oauth.googlecode.com/svn/code/php/
  */
 
-require_once('OAuth.php');
+if ( ! class_exists( 'OAuthConsumer' ) ) {
+	require_once('OAuth.php');
+}
 
 class TwitterOAuth {
 	/* Contains the last HTTP status code returned. */
