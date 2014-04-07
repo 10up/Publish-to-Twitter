@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Publish to Twitter
- * Plugin URI:
+ * Plugin URI:  http://10up.com
  * Description: Allows for publishing posts to Twitter based on category.
  * Author:      10up, Zack Tollman, Helen Hou-Sandi, Jeremy Felt, Eric Mann
  * Version:     0.1
