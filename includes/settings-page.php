@@ -409,7 +409,7 @@ class pttSettingsPage {
 	 * Add JS.
 	 */
 	public function admin_enqueue_scripts() {
-		wp_register_script( 'ptt-chosen', PTT_URL . 'js/chosen.jquery.min.js', array( 'jquery' ), '0.9.8', true );
+		wp_register_script( 'ptt-chosen', PTT_URL . 'js/chosen.jquery.min.js', array( 'jquery' ), '1.1.0', true );
 		wp_enqueue_script( 'ptt-twitter-settings-page', PTT_URL . 'js/ptt-settings-page.js', array( 'jquery', 'ptt-chosen' ), '0.1', true );
 	}
 

@@ -35,6 +35,8 @@ None
 
 * New: Add proper localization/internationalization for strings
 * New: Repair the per-category Tweet system so categories are lazy-loaded using the auto-complete feature.
+* Update: Bump the bundled Chosen library to v1.1.0.
+* Update: Rebuild JavaScript files to avoid deprecated jQuery functions.
 
 = 0.1.0 =
 

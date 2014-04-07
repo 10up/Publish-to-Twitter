@@ -1,0 +1,27 @@
+{
+	"name": "publish-to-twitter",
+	"version": "0.1.0",
+	"author": {
+		"name": "10up",
+		"email": "sales@10up.com",
+		"url": "http://10up.com"
+	},
+	"licenses": [
+		{
+			"type": "GPLv2+",
+			"url": "http://www.gnu.org/licenses/gpl-2.0.html"
+		}
+	],
+	"engines": {
+		"node": "*"
+	},
+	"scripts": {
+		"test": "grunt test"
+	},
+	"devDependencies": {
+		"grunt": "~0.4.4",
+		"grunt-contrib-jshint": "~0.10.0",
+		"grunt-contrib-uglify": "~0.4.0"
+	},
+	"keywords": []
+}
