@@ -99,7 +99,14 @@ class pttSettingsPage {
 	 * Add the submenu under Settings.
 	 */
 	public function add_submenu_page() {
-		$this->_hook = add_submenu_page( 'options-general.php', 'Publish to Twitter Settings', 'Publish to Twitter', 'manage_options', 'ptt-publish-to-twitter', array( $this, 'submenu_page' ) );
+		$this->_hook = add_submenu_page(
+			'options-general.php',
+			esc_html__( 'Publish to Twitter Settings', 'tweetpublish' ),
+			esc_html__( 'Publish to Twitter', 'tweetpublish' ),
+			'manage_options',
+			'ptt-publish-to-twitter',
+			array( $this, 'submenu_page' )
+		);
 	}
 
 	/**
@@ -109,7 +116,7 @@ class pttSettingsPage {
 		?>
     <div class="wrap">
 		<?php screen_icon(); ?>
-        <h2>Publish to Twitter</h2>
+        <h2><?php esc_html_e( 'Publish to Twitter', 'tweetpublish' ); ?></h2>
 
         <form action="options.php" method="post">
 
@@ -117,7 +124,7 @@ class pttSettingsPage {
 			<?php do_settings_sections( 'ptt-publish-to-twitter' ); ?>
 
 			<?php wp_nonce_field( 'ptt-save-associations', 'ptt-save-associations-nonce' ); ?>
-            <br/><input type="submit" value="Save Settings" name="submit" class="button-primary"/>
+            <br/><input type="submit" value="<?php esc_attr_e( 'Save Settings', 'tweetpublish' ); ?>" name="submit" class="button-primary"/>
         </form>
     </div>
 	<?php
@@ -128,18 +135,18 @@ class pttSettingsPage {
 	 */
 	public function handle_settings() {
 		if ( false === $this->_keys_hardcoded ) {
-			add_settings_section( 'ptt-publish-to-twitter-keys', 'Application Keys', array( $this, 'add_keys_text' ), 'ptt-publish-to-twitter' );
+			add_settings_section( 'ptt-publish-to-twitter-keys', esc_html__( 'Application Keys', 'tweetpublish' ), array( $this, 'add_keys_text' ), 'ptt-publish-to-twitter' );
 
-			add_settings_field( 'ptt-publish-to-twitter-consumer-key', 'Consumer Key', array( $this, 'add_consumer_key' ), 'ptt-publish-to-twitter', 'ptt-publish-to-twitter-keys' );
-			add_settings_field( 'ptt-publish-to-twitter-consumer-secret', 'Consumer Secret', array( $this, 'add_consumer_secret' ), 'ptt-publish-to-twitter', 'ptt-publish-to-twitter-keys' );
+			add_settings_field( 'ptt-publish-to-twitter-consumer-key',    esc_html__( 'Consumer Key',    'tweetpublish' ), array( $this, 'add_consumer_key' ),    'ptt-publish-to-twitter', 'ptt-publish-to-twitter-keys' );
+			add_settings_field( 'ptt-publish-to-twitter-consumer-secret', esc_html__( 'Consumer Secret', 'tweetpublish' ), array( $this, 'add_consumer_secret' ), 'ptt-publish-to-twitter', 'ptt-publish-to-twitter-keys' );
 		}
 
-		add_settings_section( 'ptt-publish-to-twitter-main-settings', 'Account/Category Associations', array( $this, 'add_accounts_text' ), 'ptt-publish-to-twitter' );
+		add_settings_section( 'ptt-publish-to-twitter-main-settings', esc_html__( 'Account/Category Associations', 'tweetpublish' ), array( $this, 'add_accounts_text' ), 'ptt-publish-to-twitter' );
 
 		register_setting( 'ptt-publish-to-twitter-settings', 'ptt-publish-to-twitter-settings', array( $this, 'validate_settings' ) );
-		//add_settings_field( 'ptt-publish-to-twitter-main-settings-associations', 'Accounts and Associated Categories', array( $this, 'add_associations_input' ), 'ptt-publish-to-twitter', 'ptt-publish-to-twitter-main-settings' );
+		add_settings_field( 'ptt-publish-to-twitter-main-settings-associations', esc_html__( 'Accounts and Associated Categories', 'tweetpublish' ), array( $this, 'add_associations_input' ), 'ptt-publish-to-twitter', 'ptt-publish-to-twitter-main-settings' );
 
-		add_settings_field( 'ptt-publish-to-twitter-main-settings-accounts', 'Available Twitter Accounts', array( $this, 'add_accounts_input' ), 'ptt-publish-to-twitter', 'ptt-publish-to-twitter-main-settings' );
+		add_settings_field( 'ptt-publish-to-twitter-main-settings-accounts', esc_html__( 'Available Twitter Accounts', 'tweetpublish' ), array( $this, 'add_accounts_input' ), 'ptt-publish-to-twitter', 'ptt-publish-to-twitter-main-settings' );
 	}
 
 	/**
@@ -147,7 +154,7 @@ class pttSettingsPage {
 	 */
 	public function add_accounts_text() {
 		?>
-    <p>General Settings</p>
+    <p><?php esc_html_e( 'General Settings', 'tweetpublish' ); ?></p>
 	<?php
 	}
 
@@ -156,8 +163,8 @@ class pttSettingsPage {
 	 */
 	public function add_keys_text() {
 		?>
-        <p>OAuth Settings</p>
-	    <p class="description">You will need to create <a href="https://dev.twitter.com/apps/">an application on Twitter</a> to retrieve your consumer keys.</p>
+        <p><?php esc_html_e( 'OAuth Settings', 'tweetpublish' ); ?></p>
+	    <p class="description"><?php esc_html_e( 'You will need to create <a href="https://dev.twitter.com/apps/">an application on Twitter</a> to retrieve your consumer keys.', 'tweetpublish' ); ?></p>
 	<?php
 	}
 
@@ -194,7 +201,7 @@ class pttSettingsPage {
 			<?php $this->_account_category_association_selects( $twitter_accounts, 0, 0, true ); */
 			?>
 			<?php else : ?>
-        <p><em>You must authenticate one Twitter account in order to begin associating accounts with categories.</em>
+        <p><em><?php esc_html_e( 'You must authenticate one Twitter account in order to begin associating accounts with categories.', 'tweetpublish' ); ?></em>
         </p>
 			<?php endif;
 	}
@@ -204,7 +211,7 @@ class pttSettingsPage {
  	 */
 	public function add_consumer_key() {
 		?>
-		<input name="_ptt_consumer_key" id="_ptt_consumer_key" type="text" class="regular-text" value="<?php echo (false === $this->_consumer_key ? '' : $this->_consumer_key); ?>" />
+		<input name="_ptt_consumer_key" id="_ptt_consumer_key" type="text" class="regular-text" value="<?php echo esc_attr( false === $this->_consumer_key ? '' : $this->_consumer_key ); ?>" />
 	<?php
 	}
 
@@ -213,7 +220,7 @@ class pttSettingsPage {
 	 */
 	public function add_consumer_secret() {
 		?>
-        <input name="_ptt_consumer_secret" id="_ptt_consumer_secret" type="text" class="regular-text" value="<?php echo (false === $this->_consumer_secret ? '' : $this->_consumer_secret); ?>" />
+        <input name="_ptt_consumer_secret" id="_ptt_consumer_secret" type="text" class="regular-text" value="<?php echo esc_attr( false === $this->_consumer_secret ? '' : $this->_consumer_secret ); ?>" />
 	<?php
 	}
 
@@ -232,14 +239,14 @@ class pttSettingsPage {
 		$associated_term_ids = wp_list_pluck( $associated_terms, 'term_id' )
 		?>
     <div class="ptt-twitter-category-pairing"><p>
-        <em>Posts in:</em>&nbsp;
+        <em><?php esc_html_e( 'Posts in:', 'tweetpublish' ); ?></em>&nbsp;
 
         <select class="ptt-chosen-terms" name="ptt-associations[terms][<?php echo absint( $twitter_account ); ?>][]"
-                multiple="multiple" data-placeholder="Select some terms">
+                multiple="multiple" data-placeholder="<?php esc_attr_e( 'Select some terms', 'tweetpublish' ); ?>">
             <option value="-99"></option>
 
 			<?php foreach ( get_object_taxonomies( 'ptt-twitter-account' ) as $taxonomy ) : ?>
-            <optgroup label="Taxonomy : <?php echo esc_attr( $taxonomy ); ?>">
+            <optgroup label="<?php esc_attr_e( 'Taxonomy : ', 'tweetpublish' ); ?><?php echo esc_attr( $taxonomy ); ?>">
 				<?php foreach ( get_terms( $taxonomy, array( 'hide_empty' => false ) ) as $term ) : ?>
                 <option value="<?php echo esc_attr( $taxonomy ) . ':' . absint( $term->term_id ); ?>" <?php selected( in_array( $term->term_id, $associated_term_ids ) ); ?>><?php echo esc_html( $term->name ); ?></option>
 				<?php endforeach; ?>
@@ -248,8 +255,8 @@ class pttSettingsPage {
 
         </select>
 
-        &nbsp;<em>automatically Tweet to:</em>&nbsp;
-        <select class="ptt-chosen-accounts" name="ptt-associations[accounts][0][]" data-placeholder="Select an account">
+        &nbsp;<em><?php esc_html_e( 'automatically Tweet to:', 'tweetpublish' ); ?></em>&nbsp;
+        <select class="ptt-chosen-accounts" name="ptt-associations[accounts][0][]" data-placeholder="<?php esc_attr_e( 'Select an account', 'tweetpublish' ); ?>">
             <option value="-99"></option>
 			<?php $ids = wp_list_pluck( $this->_retrieve_twitter_accounts_query()->posts, 'ID' ); $titles = wp_list_pluck( $this->_retrieve_twitter_accounts_query()->posts, 'post_title' ); ?>
 			<?php for ( $i = 0; $i < count( $ids ); $i ++ ) : ?>
@@ -276,14 +283,14 @@ class pttSettingsPage {
             <strong>@<?php the_title(); ?></strong>
             &nbsp;&nbsp;<a
                 href="<?php echo add_query_arg( array( 'ptt-twitter' => wp_create_nonce( 'ptt-delete-account' ), 'ptt-twitter-id' => get_the_ID() ), admin_url( '/options.php' ) ); ?>"
-                class="button">Remove Account</a>
+                class="button"><?php esc_html_e( 'Remove Account', 'tweetpublish' ); ?></a>
         </p>
 			<?php endwhile; endif; ?>
     <a href="<?php echo add_query_arg( array( 'ptt-twitter' => wp_create_nonce( 'ptt-authenticate' ), 'action' => 'update' ), admin_url( '/options.php' ) ); ?>">
-	    Authorize Twitter Account
+	    <?php esc_html_e( 'Authorize Twitter Account', 'tweetpublish' ); ?>
     </a>
 	<p class="description">
-		If you are currently logged in to Twitter, you will be authorizing your current account.
+		<?php esc_html_e( 'If you are currently logged in to Twitter, you will be authorizing your current account.', 'tweetpublish' ); ?>
 	</p>
 		<?php
 	}
@@ -470,10 +477,10 @@ class pttSettingsPage {
 				wp_redirect( $url );
 				exit();
 			} else {
-				$this->_set_message_and_redirect( 'ptt-twitter', '102', 'There was an error connecting with Twitter. Please try again.', 'error' );
+				$this->_set_message_and_redirect( 'ptt-twitter', '102', esc_html__( 'There was an error connecting with Twitter. Please try again.', 'tweetpublish' ), 'error' );
 			}
 		} else {
-			$this->_set_message_and_redirect( 'ptt-twitter', '101', 'There was an error connecting with Twitter. Please try again.', 'error' );
+			$this->_set_message_and_redirect( 'ptt-twitter', '101', esc_html__( 'There was an error connecting with Twitter. Please try again.', 'tweetpublish' ), 'error' );
 		}
 	}
 
@@ -521,23 +528,23 @@ class pttSettingsPage {
 
 							// Since the tokens are the most important part of this process, we need to verify that they saved
 							if ( $updated_oauth && $updated_oauth_secret && $updated_user_id ) {
-								$this->_set_message_and_redirect( 'ptt-twitter', '400', 'The user @' . $screen_name . ' has been authorized to use with this site!', 'updated' );
+								$this->_set_message_and_redirect( 'ptt-twitter', '400', sprintf( esc_html__( 'The user @%s has been authorized to use with this site!', 'tweetpublish' ), $screen_name ), 'updated' );
 							} else {
 								// Something went wrong; clean up the post and print error message
 								wp_delete_post( $post_id, true );
-								$this->_set_message_and_redirect( 'ptt-twitter', '205', 'There was an saving information about the Twitter Account to the database. Please try again.', 'error' );
+								$this->_set_message_and_redirect( 'ptt-twitter', '205', esc_html__( 'There was an saving information about the Twitter Account to the database. Please try again.', 'tweetpublish' ), 'error' );
 							}
 						} else {
-							$this->_set_message_and_redirect( 'ptt-twitter', '204', 'The Twitter Account could not be saved at this time. Please try again.', 'error' );
+							$this->_set_message_and_redirect( 'ptt-twitter', '204', esc_html__( 'The Twitter Account could not be saved at this time. Please try again.', 'tweetpublish' ), 'error' );
 						}
 					} else {
-						$this->_set_message_and_redirect( 'ptt-twitter', '201', 'There was an error authenticating with Twitter. Please try again.', 'error' );
+						$this->_set_message_and_redirect( 'ptt-twitter', '201', esc_html__( 'There was an error authenticating with Twitter. Please try again.', 'tweetpublish' ), 'error' );
 					}
 				} else {
-					$this->_set_message_and_redirect( 'ptt-twitter', '202', 'There was an error authenticating with Twitter. Please try again.', 'error' );
+					$this->_set_message_and_redirect( 'ptt-twitter', '202', esc_html__( 'There was an error authenticating with Twitter. Please try again.', 'tweetpublish' ), 'error' );
 				}
 			} else {
-				$this->_set_message_and_redirect( 'ptt-twitter', '203', 'There was an error authenticating with Twitter. Please try again.', 'error' );
+				$this->_set_message_and_redirect( 'ptt-twitter', '203', esc_html__( 'There was an error authenticating with Twitter. Please try again.', 'tweetpublish' ), 'error' );
 			}
 		}
 	}
@@ -548,11 +555,13 @@ class pttSettingsPage {
 	 * @return bool
 	 */
 	public function remove_twitter_account() {
-		if ( ! isset( $_GET['ptt-twitter'] ) || ! wp_verify_nonce( $_GET['ptt-twitter'], 'ptt-delete-account' ) )
+		if ( ! isset( $_GET['ptt-twitter'] ) || ! wp_verify_nonce( $_GET['ptt-twitter'], 'ptt-delete-account' ) ) {
 			return false;
+		}
 
-		if ( ! isset( $_GET['ptt-twitter-id'] ) && ! is_numeric( $_GET['ptt-twitter-id'] ) )
+		if ( ! isset( $_GET['ptt-twitter-id'] ) && ! is_numeric( $_GET['ptt-twitter-id'] ) ) {
 			return false;
+		}
 
 		$id = absint( $_GET['ptt-twitter-id'] );
 
@@ -560,10 +569,11 @@ class pttSettingsPage {
 			return false;
 
 		// Delete the post
-		if ( wp_delete_post( $id ) )
-			$this->_set_message_and_redirect( 'ptt-twitter', '400', 'The user has been unauthorized and associations have been removed.', 'updated' );
-		else
-			$this->_set_message_and_redirect( 'ptt-twitter', '301', 'The user was unable to be removed. Please try again.', 'error' );
+		if ( wp_delete_post( $id ) ) {
+			$this->_set_message_and_redirect( 'ptt-twitter', '400', esc_html__( 'The user has been unauthorized and associations have been removed.', 'tweetpublish' ), 'updated' );
+		} else {
+			$this->_set_message_and_redirect( 'ptt-twitter', '301', esc_html__( 'The user was unable to be removed. Please try again.', 'tweetpublish' ), 'error' );
+		}
 	}
 
 	/**
@@ -575,8 +585,9 @@ class pttSettingsPage {
 	 * paid to how I'm including this as I cannot account for things I cannot mimick in dev.
 	 */
 	private function _include_twitteroauth() {
-		if ( ! class_exists( 'pttTwitterOAuth' ) )
+		if ( ! class_exists( 'pttTwitterOAuth' ) ) {
 			require_once( __DIR__ . '/library/ptt-twitter-oauth.php' );
+		}
 	}
 
 	/**
@@ -591,18 +602,21 @@ class pttSettingsPage {
 	 */
 	private function _validate_twitter_oauth_token( $oauth_token, $id ) {
 		// Make sure the id is in the token; note that this will return false if the $id is not cast to string
-		if ( false === strpos( $oauth_token, ( string ) $id ) )
+		if ( false === strpos( $oauth_token, ( string ) $id ) ) {
 			return false;
+		}
 
 		// The next character after the id should be a "-"
 		$sans_id = str_replace( $id, '', $oauth_token );
-		if ( '-' != substr( $sans_id, 0, 1 ) )
+		if ( '-' != substr( $sans_id, 0, 1 ) ) {
 			return false;
+		}
 
 		// The rest of the token must be alphanumeric
 		$sans_id_and_dash = substr( $sans_id, 1 );
-		if ( ! ctype_alnum( $sans_id_and_dash ) )
+		if ( ! ctype_alnum( $sans_id_and_dash ) ) {
 			return false;
+		}
 
 		return $oauth_token;
 	}
@@ -620,7 +634,7 @@ class pttSettingsPage {
 			'setting' => $setting,
 			'code'    => $code,
 			'message' => $message,
-			'type'    => $type
+			'type'    => $type,
 		);
 	}
 

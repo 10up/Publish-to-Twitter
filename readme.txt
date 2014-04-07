@@ -33,6 +33,9 @@ None
 
 = DEV =
 
+* New: Add proper localization/internationalization for strings
+* New: Repair the per-category Tweet system so categories are lazy-loaded using the auto-complete feature.
+
 = 0.1.0 =
 
 * Initial alpha version
