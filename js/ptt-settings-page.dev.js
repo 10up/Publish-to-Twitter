@@ -42,6 +42,14 @@
 			results : function ( data, page ) {
 				return data;
 			}
+		},
+		initSelection: function( element, callback ) {
+			var data = [];
+			$( element.val().split( ',' ) ).each( function() {
+				var parts = this.split( ':' );
+				data.push( { id: parts[0], text: parts[2] } );
+			} );
+			callback( data );
 		}
 	} );
 

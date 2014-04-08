@@ -237,13 +237,19 @@ class pttSettingsPage {
 	private function _account_category_association_selects( $twitter_account ) {
 		$taxonomies       = get_object_taxonomies( 'ptt-twitter-account' );
 		$associated_terms = wp_get_object_terms( $twitter_account, $taxonomies );
-		$associated_term_ids = wp_list_pluck( $associated_terms, 'term_id' )
+		$associated_term_ids = wp_list_pluck( $associated_terms, 'term_id' );
+
+		$values = array();
+		foreach( $associated_terms as $term ) {
+			$values[] = $term->taxonomy . ':' . $term->term_id . ':' . $term->name;
+		}
+		$values = array_map( 'esc_attr', $values );
 		?>
     <div class="ptt-twitter-category-pairing"><p>
         <em><?php esc_html_e( 'Posts in:', 'tweetpublish' ); ?></em>&nbsp;
 
-        <input type="hidden" class="ptt-chosen-terms" name="ptt-associations[terms][<?php echo absint( $twitter_account ); ?>][]"
-                multiple="multiple" data-placeholder="<?php esc_attr_e( 'Select some terms', 'tweetpublish' ); ?>"/>
+        <input type="hidden" class="ptt-chosen-terms" name="ptt-associations[terms][<?php echo absint( $twitter_account ); ?>]"
+                multiple="multiple" data-placeholder="<?php esc_attr_e( 'Select some terms', 'tweetpublish' ); ?>" value="<?php echo implode( ',', $values ) ?>"/>
 
         &nbsp;<em><?php esc_html_e( 'automatically Tweet to:', 'tweetpublish' ); ?></em>&nbsp;
         <select multiple class="ptt-chosen-accounts" name="ptt-associations[accounts][0][]" data-placeholder="<?php esc_attr_e( 'Select an account', 'tweetpublish' ); ?>">
@@ -337,11 +343,13 @@ class pttSettingsPage {
 	}
 
 	public function save_associations() {
-		if ( ! isset( $_POST['ptt-save-associations-nonce'] ) || ! wp_verify_nonce( $_POST['ptt-save-associations-nonce'], 'ptt-save-associations' ) )
+		if ( ! isset( $_POST['ptt-save-associations-nonce'] ) || ! wp_verify_nonce( $_POST['ptt-save-associations-nonce'], 'ptt-save-associations' ) ) {
 			return false;
+		}
 
-		if ( ! isset( $_POST['ptt-associations'] ) || ! isset( $_POST['ptt-associations']['terms'] ) || ! isset( $_POST['ptt-associations']['accounts'] ) )
+		if ( ! isset( $_POST['ptt-associations'] ) || ! isset( $_POST['ptt-associations']['terms'] ) || ! isset( $_POST['ptt-associations']['accounts'] ) ) {
 			return false;
+		}
 
 		$associations_to_save = array();
 
@@ -362,8 +370,9 @@ class pttSettingsPage {
 		 */
 		foreach ( $_POST['ptt-associations']['accounts'] as $a_key => $a_value ) {
 			foreach ( $a_value as $a_sub_key => $twitter_account_id ) {
-				foreach ( $_POST['ptt-associations']['terms'][$twitter_account_id] as $t_key => $taxonomy_name_term_id ) {
-					$term_pieces                                                  = explode( ':', $taxonomy_name_term_id );
+				$terms = explode( ',', $_POST['ptt-associations']['terms'][$twitter_account_id] );
+				foreach ( $terms as $term ) {
+					$term_pieces                                                  = explode( ':', $term );
 					$associations_to_save[$twitter_account_id][$term_pieces[0]][] = $term_pieces[1];
 				}
 			}
