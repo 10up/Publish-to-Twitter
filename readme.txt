@@ -4,7 +4,7 @@ Donate link:       http://10up.com
 Tags:              twitter, social
 Requires at least: 3.8.1
 Tested up to:      3.9
-Stable tag:        0.1
+Stable tag:        1.0
 License:           GPLv2 or later
 License URI:       http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -31,7 +31,7 @@ None
 
 == Changelog ==
 
-= DEV =
+= 1.0 =
 
 * New: Add proper localization/internationalization for strings
 * New: Repair the per-category Tweet system so categories are lazy-loaded using the auto-complete feature.
