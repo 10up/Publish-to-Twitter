@@ -47,7 +47,7 @@
 			var data = [];
 			$( element.val().split( ',' ) ).each( function() {
 				var parts = this.split( ':' );
-				data.push( { id: parts[0], text: parts[2] } );
+				data.push( { id: parts[0] + ':' + parts[1], text: parts[2] } );
 			} );
 			callback( data );
 		}

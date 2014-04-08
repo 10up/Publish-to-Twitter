@@ -240,6 +240,9 @@ class pttSettingsPage {
 
 		$values = array();
 		foreach( $associated_terms as $term ) {
+			if ( empty( $term->term_id ) || empty( $term->name ) ) {
+				continue;
+			}
 			$values[] = $term->taxonomy . ':' . $term->term_id . ':' . $term->name;
 		}
 		$values = array_map( 'esc_attr', $values );
@@ -371,8 +374,13 @@ class pttSettingsPage {
 		foreach ( $_POST['ptt-associations']['accounts'] as $a_key => $a_value ) {
 			foreach ( $a_value as $a_sub_key => $twitter_account_id ) {
 				$terms = explode( ',', $_POST['ptt-associations']['terms'][$twitter_account_id] );
+
 				foreach ( $terms as $term ) {
 					$term_pieces = explode( ':', $term );
+
+					if ( ! isset( $term_pieces[1] ) ) {
+						continue;
+					}
 
 					if ( ! isset( $non_hierarchical_terms[ $term_pieces[0] ] ) ) {
 						$non_hierarchical_terms[ $term_pieces[0] ] = array();
@@ -391,12 +399,15 @@ class pttSettingsPage {
 
 			// Verify post (Twitter Account)
 			if ( get_post( $post_id ) ) {
-
 				foreach ( $associations as $taxonomy => $term_ids ) {
 					$taxonomy_obj = get_taxonomy( $taxonomy );
 
+					// Remove existing relationships so we can reset things.
+					wp_delete_object_term_relationships( $post_id, $taxonomy );
+
 					if ( $taxonomy_obj->hierarchical ) {
-						wp_set_post_terms( $post_id, $term_ids, $taxonomy );
+						$term_ids = array_map( 'intval', $term_ids );
+						wp_set_object_terms( $post_id, $term_ids, $taxonomy );
 					} else {
 						// For non-hierarchical taxonomies, we need to grab the term names
 						$terms = array();
@@ -410,6 +421,9 @@ class pttSettingsPage {
 				}
 			}
 		}
+
+		unset( $_POST['ptt-associations'] );
+		unset( $_POST['ptt-associations-nonce'] );
 
 		return $_POST;
 	}
