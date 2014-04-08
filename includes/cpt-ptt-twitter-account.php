@@ -41,7 +41,7 @@ class pttTwitterAccount {
 			'rewrite'             => false,
 			'query_var'           => false,
 			'can_export'          => false,
-			'supports'            => array( 'title', 'editor', 'thumbnail', 'comments' ), // @todo: adding comments to use as a log of tweets. consider if I really want to do this or not.
+			'supports'            => array( 'title', 'editor', 'thumbnail', 'comments' ),
 			'taxonomies'          => apply_filters( 'ptt_taxonomies', get_taxonomies() )
 		);
 

@@ -24,8 +24,6 @@ class pttPublishToTwitter {
 
 	public function __construct() {
 
-		// @todo: think about adding these files only when necessary if possible
-
 		// All functionality related to the ptt-twitter-account CPT.
 		require_once( PTT_ROOT . '/includes/cpt-ptt-twitter-account.php' );
 
