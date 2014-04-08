@@ -11,8 +11,9 @@
 /**
  * Set constants
  */
-define( 'PTT_ROOT' , __DIR__ );
-define( 'PTT_URL' , plugins_url( '/', __FILE__ ) );
+define( 'PTT_ROOT',    __DIR__ );
+define( 'PTT_URL',     plugins_url( '/', __FILE__ ) );
+define( 'PTT_VERSION', '0.1.0' );
 
 /**
  * Wrapper to initiate plugin functionality.

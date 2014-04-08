@@ -63,18 +63,19 @@ class pttSettingsPage {
 	 */
 	public function __construct() {
 		// Menu item and settings
-		add_action( 'admin_menu', array( $this, 'add_submenu_page' ) );
-		add_action( 'admin_init', array( $this, 'handle_settings' ) );
+		add_action( 'admin_menu',         array( $this, 'add_submenu_page'  ) );
+		add_action( 'admin_init',         array( $this, 'handle_settings'   ) );
+		add_action( 'wp_ajax_ptt-select', array( $this, 'ajax_autocomplete' ) );
 
 		// Twitter specific actions
-		add_action( 'admin_init', array( $this, 'get_authorization' ) );
-		add_action( 'admin_init', array( $this, 'process_twitter_tokens' ) );
-		add_action( 'admin_init', array( $this, 'remove_twitter_account' ) );
+		add_action( 'admin_init',    array( $this, 'get_authorization'      ) );
+		add_action( 'admin_init',    array( $this, 'process_twitter_tokens' ) );
+		add_action( 'admin_init',    array( $this, 'remove_twitter_account' ) );
 		add_action( 'admin_notices', array( $this, 'display_twitter_errors' ) );
 
 		// Styles and JS
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
-		add_action( 'admin_print_styles', array( $this, 'admin_print_styles' ) );
+		add_action( 'admin_print_styles',    array( $this, 'admin_print_styles'    ) );
 
 		// Set instance vars
 		$this->_oauth_callback    = admin_url( '/options.php?ptt-action=ptt-publish-to-twitter-auth' );
@@ -241,22 +242,11 @@ class pttSettingsPage {
     <div class="ptt-twitter-category-pairing"><p>
         <em><?php esc_html_e( 'Posts in:', 'tweetpublish' ); ?></em>&nbsp;
 
-        <select class="ptt-chosen-terms" name="ptt-associations[terms][<?php echo absint( $twitter_account ); ?>][]"
-                multiple="multiple" data-placeholder="<?php esc_attr_e( 'Select some terms', 'tweetpublish' ); ?>">
-            <option value="-99"></option>
-
-			<?php foreach ( get_object_taxonomies( 'ptt-twitter-account' ) as $taxonomy ) : ?>
-            <optgroup label="<?php esc_attr_e( 'Taxonomy : ', 'tweetpublish' ); ?><?php echo esc_attr( $taxonomy ); ?>">
-				<?php foreach ( get_terms( $taxonomy, array( 'hide_empty' => false ) ) as $term ) : ?>
-                <option value="<?php echo esc_attr( $taxonomy ) . ':' . absint( $term->term_id ); ?>" <?php selected( in_array( $term->term_id, $associated_term_ids ) ); ?>><?php echo esc_html( $term->name ); ?></option>
-				<?php endforeach; ?>
-            </optgroup>
-			<?php endforeach; ?>
-
-        </select>
+        <input type="hidden" class="ptt-chosen-terms" name="ptt-associations[terms][<?php echo absint( $twitter_account ); ?>][]"
+                multiple="multiple" data-placeholder="<?php esc_attr_e( 'Select some terms', 'tweetpublish' ); ?>"/>
 
         &nbsp;<em><?php esc_html_e( 'automatically Tweet to:', 'tweetpublish' ); ?></em>&nbsp;
-        <select class="ptt-chosen-accounts" name="ptt-associations[accounts][0][]" data-placeholder="<?php esc_attr_e( 'Select an account', 'tweetpublish' ); ?>">
+        <select multiple class="ptt-chosen-accounts" name="ptt-associations[accounts][0][]" data-placeholder="<?php esc_attr_e( 'Select an account', 'tweetpublish' ); ?>">
             <option value="-99"></option>
 			<?php $ids = wp_list_pluck( $this->_retrieve_twitter_accounts_query()->posts, 'ID' ); $titles = wp_list_pluck( $this->_retrieve_twitter_accounts_query()->posts, 'post_title' ); ?>
 			<?php for ( $i = 0; $i < count( $ids ); $i ++ ) : ?>
@@ -409,15 +399,20 @@ class pttSettingsPage {
 	 * Add JS.
 	 */
 	public function admin_enqueue_scripts() {
-		wp_register_script( 'ptt-chosen', PTT_URL . 'js/chosen.jquery.min.js', array( 'jquery' ), '1.1.0', true );
-		wp_enqueue_script( 'ptt-twitter-settings-page', PTT_URL . 'js/ptt-settings-page.js', array( 'jquery', 'ptt-chosen' ), '0.1', true );
+		wp_register_script( 'ptt-select', PTT_URL . 'js/select2/select2.js', array( 'jquery' ), '3.4.6', true );
+
+		if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
+			wp_enqueue_script( 'ptt-twitter-settings-page', PTT_URL . 'js/ptt-settings-page.dev.js', array( 'jquery', 'ptt-select' ), PTT_VERSION, true );
+		} else {
+			wp_enqueue_script( 'ptt-twitter-settings-page', PTT_URL . 'js/ptt-settings-page.js', array( 'jquery', 'ptt-select' ), PTT_VERSION, true );
+		}
 	}
 
 	/**
 	 * Add CSS.
 	 */
 	public function admin_print_styles() {
-		wp_enqueue_style( 'ptt-chosen', PTT_URL . 'css/chosen.css', array(), '0.9.8' );
+		wp_enqueue_style( 'ptt-select', PTT_URL . 'js/select2/select2.css', array(), '3.4.6' );
 		?>
     <style type="text/css">
         .ptt-twitter-category-pairing {
@@ -683,6 +678,35 @@ class pttSettingsPage {
 		set_transient( 'ptt-twitter-error-' . get_current_user_id(), $this->_twitter_errors, 300 );
 		wp_redirect( $this->_settings_page_url );
 		exit();
+	}
+
+	/**
+	 * AJAX Autocomplete
+	 */
+	public function ajax_autocomplete() {
+		$search_term = sanitize_text_field( $_REQUEST['q'] );
+		$results = array();
+
+		foreach ( get_object_taxonomies( 'ptt-twitter-account' ) as $taxonomy ) {
+			$children = array();
+
+			$terms = get_terms(
+				$taxonomy,
+				array(
+					'hide_empty' => false,
+				    'name__like' => $search_term,
+				    'number'     => absint( $_REQUEST['limit'] ),
+				)
+			);
+
+			foreach( $terms as $term ) {
+				$children[] = array( 'id' => $taxonomy . ':' . $term->term_id, 'text' => $term->name, );
+			}
+
+			$results[] = array( 'text' => $taxonomy, 'children' => $children );
+		}
+
+		wp_send_json( array( 'results' => $results ) );
 	}
 }
 

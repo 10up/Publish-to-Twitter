@@ -8,8 +8,8 @@
 			$div = $( '#ptt-twitter-category-pairings' );
 
 		$new_row.css( {
-			visibility : 'visible',
-			height     : ''
+			visibility: 'visible',
+			height    : ''
 		} ).appendTo( $div );
 	} );
 
@@ -25,12 +25,28 @@
 	} );
 
 	// Setup Chosen for Terms
-	$( '.ptt-chosen-terms' ).chosen( {
-		no_results_text : 'No terms match'
+	$( '.ptt-chosen-terms' ).select2( {
+		formatNoMatches   : 'No terms match',
+		multiple          : true,
+		minimumInputLength: 2,
+		ajax              : {
+			url     : 'http://plugins.dev/wp-admin/admin-ajax.php',
+			dataType: 'json',
+			data    : function ( term, page ) {
+				return {
+					q     : term,
+					action: 'ptt-select',
+					limit : 5
+				};
+			},
+			results : function ( data, page ) {
+				return data;
+			}
+		}
 	} );
 
 	// Setup Chosen for Accounts
-	$( '.ptt-chosen-accounts' ).chosen( {
-		no_results_text : 'No accounts match'
+	$( '.ptt-chosen-accounts' ).select2( {
+		formatNoMatches: 'No accounts match'
 	} );
 })( this, jQuery );
