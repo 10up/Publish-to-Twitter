@@ -237,7 +237,6 @@ class pttSettingsPage {
 	private function _account_category_association_selects( $twitter_account ) {
 		$taxonomies       = get_object_taxonomies( 'ptt-twitter-account' );
 		$associated_terms = wp_get_object_terms( $twitter_account, $taxonomies );
-		$associated_term_ids = wp_list_pluck( $associated_terms, 'term_id' );
 
 		$values = array();
 		foreach( $associated_terms as $term ) {
@@ -352,6 +351,7 @@ class pttSettingsPage {
 		}
 
 		$associations_to_save = array();
+		$non_hierarchical_terms = array();
 
 		/**
 		 * Sort input into array of the following format:
@@ -372,8 +372,14 @@ class pttSettingsPage {
 			foreach ( $a_value as $a_sub_key => $twitter_account_id ) {
 				$terms = explode( ',', $_POST['ptt-associations']['terms'][$twitter_account_id] );
 				foreach ( $terms as $term ) {
-					$term_pieces                                                  = explode( ':', $term );
+					$term_pieces = explode( ':', $term );
+
+					if ( ! isset( $non_hierarchical_terms[ $term_pieces[0] ] ) ) {
+						$non_hierarchical_terms[ $term_pieces[0] ] = array();
+					}
+
 					$associations_to_save[$twitter_account_id][$term_pieces[0]][] = $term_pieces[1];
+					$non_hierarchical_terms[ $term_pieces[0] ][ $term_pieces[1] ] = $term_pieces[2];
 				}
 			}
 		}
@@ -387,7 +393,20 @@ class pttSettingsPage {
 			if ( get_post( $post_id ) ) {
 
 				foreach ( $associations as $taxonomy => $term_ids ) {
-					wp_set_post_terms( $post_id, $term_ids, $taxonomy );
+					$taxonomy_obj = get_taxonomy( $taxonomy );
+
+					if ( $taxonomy_obj->hierarchical ) {
+						wp_set_post_terms( $post_id, $term_ids, $taxonomy );
+					} else {
+						// For non-hierarchical taxonomies, we need to grab the term names
+						$terms = array();
+
+						foreach( $term_ids as $term_id ) {
+							$terms[] = $non_hierarchical_terms[ $taxonomy ][ $term_id ];
+						}
+
+						wp_set_object_terms( $post_id, $terms, $taxonomy );
+					}
 				}
 			}
 		}
@@ -709,7 +728,7 @@ class pttSettingsPage {
 			);
 
 			foreach( $terms as $term ) {
-				$children[] = array( 'id' => $taxonomy . ':' . $term->term_id, 'text' => $term->name, );
+				$children[] = array( 'id' => $taxonomy . ':' . $term->term_id . ':' . $term->name, 'text' => $term->name, );
 			}
 
 			$results[] = array( 'text' => $taxonomy, 'children' => $children );
