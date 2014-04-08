@@ -4,7 +4,7 @@ Donate link:       http://10up.com
 Tags:              twitter, social
 Requires at least: 3.8.1
 Tested up to:      3.9
-Stable tag:        1.0
+Stable tag:        1.0.1
 License:           GPLv2 or later
 License URI:       http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -30,6 +30,11 @@ None
 None
 
 == Changelog ==
+
+= 1.0.1 =
+
+* Fix: Minor JS bugs limiting things to a staging environment
+* Fix: Expand tweet filtering to encompass all taxonomies
 
 = 1.0 =
 

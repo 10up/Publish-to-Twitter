@@ -88,22 +88,34 @@ class pttPublishTweet {
 			// Get any hashtags that need to be applied
 			$hashtags = apply_filters( 'ptt_hashtags', '', $post );
 
-			// Get a comma-delimited list of post categories
-			$cats = wp_get_post_categories( $post->ID );
-			$categories = implode( ',', $cats );
+			// Get all of the taxonomies available
+			$taxonomies = get_object_taxonomies( 'ptt-twitter-account' );
 
-			// Get Twitter accounts to send from
+			$taxonomy_args = array(
+				'relation' => 'OR'
+			);
+
+			foreach( $taxonomies as $taxonomy ) {
+				$terms = wp_get_object_terms( $post->ID, $taxonomy, array( 'fields' => 'ids' ) );
+
+				$taxonomy_args[] = array(
+					'taxonomy' => $taxonomy,
+					'field'    => 'id',
+				    'terms'    => $terms,
+				);
+			}
+
+			$search_args = array(
+				'post_type'   => 'ptt-twitter-account',
+				'post_status' => 'publish',
+				'numberposts' => -1,
+			    'tax_query'   => $taxonomy_args
+			);
+
 			$accounts = get_posts(
-				array(
-				     'post_type'   => 'ptt-twitter-account',
-				     'post_status' => 'publish',
-				     'numberposts' => -1,
-				     'category'    => $categories
-				)
+				$search_args
 			);
 			$accounts = wp_list_pluck( $accounts, 'post_title' );
-			$accounts = apply_filters( 'ptt_accounts', $accounts, $post );
-
 
 			foreach( $accounts as $account ) {
 				$twitname = apply_filters( 'ptt_twitname', $account, $post );

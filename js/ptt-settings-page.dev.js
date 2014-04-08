@@ -26,11 +26,13 @@
 
 	// Setup Chosen for Terms
 	$( '.ptt-chosen-terms' ).select2( {
-		formatNoMatches   : 'No terms match',
+		formatNoMatches   : function( term ) {
+			return 'No terms match';
+		},
 		multiple          : true,
 		minimumInputLength: 2,
 		ajax              : {
-			url     : 'http://plugins.dev/wp-admin/admin-ajax.php',
+			url     : window.ajaxurl,
 			dataType: 'json',
 			data    : function ( term, page ) {
 				return {
