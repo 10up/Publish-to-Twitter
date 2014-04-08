@@ -6,6 +6,8 @@
  * Author:      10up, Zack Tollman, Helen Hou-Sandi, Jeremy Felt, Eric Mann
  * Version:     0.1
  * Author URI:  http://10up.com
+ * Text Domain: tweetpublish
+ * Domain Path: /lang
  */
 
 /**
@@ -33,5 +35,14 @@ class pttPublishToTwitter {
 		// Controls the admin page for the plugin.
 		require_once( PTT_ROOT . '/includes/settings-page.php' );
 	}
+
+	/**
+	 * Initialization routine for adding text domains and such.
+	 */
+	public function initialize() {
+		load_plugin_textdomain( 'tweetpublish', false, dirname( plugin_basename( __FILE__ ) ) . '/lang' );
+	}
 }
 $pttPublishToTwitter = new pttPublishToTwitter();
+
+add_action( 'init', array( $pttPublishToTwitter, 'initialize' ) );
