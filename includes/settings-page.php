@@ -165,7 +165,7 @@ class pttSettingsPage {
 	public function add_keys_text() {
 		?>
         <p><?php esc_html_e( 'OAuth Settings', 'tweetpublish' ); ?></p>
-	    <p class="description"><?php esc_html_e( 'You will need to create <a href="https://dev.twitter.com/apps/">an application on Twitter</a> to retrieve your consumer keys.', 'tweetpublish' ); ?></p>
+	    <p class="description"><?php echo sprintf( esc_html__( 'You will need to create %san application on Twitter%s to retrieve your consumer keys.', 'tweetpublish' ), '<a href="https://dev.twitter.com/apps/">', '</a>' ); ?></p>
 	<?php
 	}
 
