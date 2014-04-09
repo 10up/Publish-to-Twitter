@@ -45,6 +45,26 @@ module.exports = function( grunt ) {
 				src:  [ '*.php', 'includes/**/*.php' ],
 				expand: true
 			}
+		},
+		clean:    {
+			main:    ['release/<%= pkg.version %>']
+		},
+		copy: {
+			main: {
+				src: [
+					'**',
+				    '!node_modules/**',
+				    '!release/**',
+				    '!assets/**',
+				    '!.git/**',
+				    '!.gitignore',
+				    '!.jshintrc',
+				    '!Gruntfile.js',
+				    '!package.json',
+				    '!readme.md'
+				],
+				dest: 'release/<%= pkg.version %>/'
+			}
 		}
 	} );
 
@@ -53,6 +73,8 @@ module.exports = function( grunt ) {
 	grunt.loadNpmTasks( 'grunt-contrib-uglify' );
 	grunt.loadNpmTasks( 'grunt-wp-readme-to-markdown' );
 	grunt.loadNpmTasks( 'grunt-pot' );
+	grunt.loadNpmTasks( 'grunt-contrib-clean' );
+	grunt.loadNpmTasks( 'grunt-contrib-copy' );
 
 	// Default task
 	grunt.registerTask( 'default', ['jshint', 'uglify'] );
@@ -60,6 +82,7 @@ module.exports = function( grunt ) {
 	// Additional tasks
 	grunt.registerTask( 'localize', ['pot'] );
 	grunt.registerTask( 'readme', ['wp_readme_to_markdown'] );
+	grunt.registerTask( 'build', ['default', 'localize', 'clean', 'copy'] );
 
 	grunt.util.linefeed = '\n';
 };
