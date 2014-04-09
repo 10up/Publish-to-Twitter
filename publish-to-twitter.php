@@ -4,7 +4,7 @@
  * Plugin URI:  http://10up.com
  * Description: Allows for publishing posts to Twitter based on category.
  * Author:      10up, Zack Tollman, Helen Hou-Sandi, Jeremy Felt, Eric Mann
- * Version:     1.0.1
+ * Version:     1.1.0
  * Author URI:  http://10up.com
  * Text Domain: tweetpublish
  * Domain Path: /lang
@@ -15,7 +15,7 @@
  */
 define( 'PTT_ROOT',    __DIR__ );
 define( 'PTT_URL',     plugins_url( '/', __FILE__ ) );
-define( 'PTT_VERSION', '1.0.1' );
+define( 'PTT_VERSION', '1.1.0' );
 
 /**
  * Wrapper to initiate plugin functionality.

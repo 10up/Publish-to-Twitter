@@ -4,7 +4,7 @@
 **Tags:**              twitter, social  
 **Requires at least:** 3.8.1  
 **Tested up to:**      3.9  
-**Stable tag:**        1.0.1  
+**Stable tag:**        1.1.0  
 **License:**           GPLv2 or later  
 **License URI:**       http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -37,10 +37,13 @@ Once the application is set up, you can find your Consumer and Consumer Secret k
 
 ## Changelog ##
 
-### DEV ###
+### 1.1.0 ###
 
 * Fix: Correct an over-escaped string
 * New: Add FAQs and Screenshots
+* Dev: Add Readme.md parser
+* Dev: Add pre-deploy build script (to clean node modules and dependencies)
+* Dev: Add I18N parser
 
 ### 1.0.1 ###
 
