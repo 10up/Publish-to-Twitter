@@ -11,21 +11,8 @@ module.exports = function( grunt ) {
 				'Gruntfile.js',
 				'js/*.dev.js'
 			],
-			options : {
-				curly   : true,
-				eqeqeq  : true,
-				immed   : true,
-				latedef : true,
-				newcap  : true,
-				noarg   : true,
-				sub     : true,
-				undef   : true,
-				boss    : true,
-				eqnull  : true,
-				globals : {
-					exports : true,
-					module  : false
-				}
+			options: {
+				jshintrc: true
 			}
 		},
 		uglify : {
