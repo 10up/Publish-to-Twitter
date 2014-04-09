@@ -1,0 +1,193 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: publish-to-twitter 1.0.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-04-09 00:41+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: includes/cpt-ptt-twitter-account.php:24
+#: includes/cpt-ptt-twitter-account.php:35
+msgid "Twitter Accounts"
+msgstr ""
+
+#: includes/cpt-ptt-twitter-account.php:25
+msgid "Twitter Account"
+msgstr ""
+
+#: includes/cpt-ptt-twitter-account.php:26
+msgctxt "Label for \"add new twitter account\""
+msgid "Add New"
+msgstr ""
+
+#: includes/cpt-ptt-twitter-account.php:27
+msgid "Add New Twitter Account"
+msgstr ""
+
+#: includes/cpt-ptt-twitter-account.php:28
+msgid "Edit Twitter Account"
+msgstr ""
+
+#: includes/cpt-ptt-twitter-account.php:29
+msgid "New Twitter Account"
+msgstr ""
+
+#: includes/cpt-ptt-twitter-account.php:30
+msgid "All Twitter Accounts"
+msgstr ""
+
+#: includes/cpt-ptt-twitter-account.php:31
+msgid "View Twitter Account"
+msgstr ""
+
+#: includes/cpt-ptt-twitter-account.php:32
+msgid "Search Twitter Accounts"
+msgstr ""
+
+#: includes/cpt-ptt-twitter-account.php:33
+msgid "No Twitter accounts found"
+msgstr ""
+
+#: includes/cpt-ptt-twitter-account.php:34
+msgid "No Twitter accounts found in Trash"
+msgstr ""
+
+#: includes/cpt-ptt-twitter-account.php:37
+msgid "Twitter accounts associated with the site."
+msgstr ""
+
+#: includes/publish-tweet.php:77
+#, php-format
+msgctxt "[post title] [post link] by [twitter username]"
+msgid "%1$s %2$s by %3$s"
+msgstr ""
+
+#: includes/settings-page.php:105
+msgid "Publish to Twitter Settings"
+msgstr ""
+
+#: includes/settings-page.php:106 includes/settings-page.php:120
+msgid "Publish to Twitter"
+msgstr ""
+
+#: includes/settings-page.php:128
+msgid "Save Settings"
+msgstr ""
+
+#: includes/settings-page.php:139
+msgid "Application Keys"
+msgstr ""
+
+#: includes/settings-page.php:141
+msgid "Consumer Key"
+msgstr ""
+
+#: includes/settings-page.php:142
+msgid "Consumer Secret"
+msgstr ""
+
+#: includes/settings-page.php:145
+msgid "Account/Category Associations"
+msgstr ""
+
+#: includes/settings-page.php:148
+msgid "Accounts and Associated Categories"
+msgstr ""
+
+#: includes/settings-page.php:150
+msgid "Available Twitter Accounts"
+msgstr ""
+
+#: includes/settings-page.php:158
+msgid "General Settings"
+msgstr ""
+
+#: includes/settings-page.php:167
+msgid "OAuth Settings"
+msgstr ""
+
+#: includes/settings-page.php:168
+#, php-format
+msgid ""
+"You will need to create %san application on Twitter%s to retrieve your "
+"consumer keys."
+msgstr ""
+
+#: includes/settings-page.php:205
+msgid ""
+"You must authenticate one Twitter account in order to begin associating "
+"accounts with categories."
+msgstr ""
+
+#: includes/settings-page.php:251
+msgid "Posts in:"
+msgstr ""
+
+#: includes/settings-page.php:254
+msgid "Select some terms"
+msgstr ""
+
+#: includes/settings-page.php:256
+msgid "automatically Tweet to:"
+msgstr ""
+
+#: includes/settings-page.php:257
+msgid "Select an account"
+msgstr ""
+
+#: includes/settings-page.php:284
+msgid "Remove Account"
+msgstr ""
+
+#: includes/settings-page.php:288
+msgid "Authorize Twitter Account"
+msgstr ""
+
+#: includes/settings-page.php:291
+msgid ""
+"If you are currently logged in to Twitter, you will be authorizing your "
+"current account."
+msgstr ""
+
+#: includes/settings-page.php:517 includes/settings-page.php:520
+msgid "There was an error connecting with Twitter. Please try again."
+msgstr ""
+
+#: includes/settings-page.php:568
+#, php-format
+msgid "The user @%s has been authorized to use with this site!"
+msgstr ""
+
+#: includes/settings-page.php:572
+msgid ""
+"There was an saving information about the Twitter Account to the database. "
+"Please try again."
+msgstr ""
+
+#: includes/settings-page.php:575
+msgid "The Twitter Account could not be saved at this time. Please try again."
+msgstr ""
+
+#: includes/settings-page.php:578 includes/settings-page.php:581
+#: includes/settings-page.php:584
+msgid "There was an error authenticating with Twitter. Please try again."
+msgstr ""
+
+#: includes/settings-page.php:610
+msgid "The user has been unauthorized and associations have been removed."
+msgstr ""
+
+#: includes/settings-page.php:612
+msgid "The user was unable to be removed. Please try again."
+msgstr ""

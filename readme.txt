@@ -39,6 +39,9 @@ Once the application is set up, you can find your Consumer and Consumer Secret k
 
 * Fix: Correct an over-escaped string
 * New: Add FAQs and Screenshots
+* Dev: Add Readme.md parser
+* Dev: Add pre-deploy build script (to clean node modules and dependencies)
+* Dev: Add I18N parser
 
 = 1.0.1 =
 
