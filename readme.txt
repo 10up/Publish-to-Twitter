@@ -23,11 +23,15 @@ Allows for publishing posts to Twitter based on category.
 
 == Frequently Asked Questions ==
 
-None
+= How do I get a Twitter Consumer Key? =
+
+Log in to https://apps.twitter.com/apps and create a new application.
+
+Once the application is set up, you can find your Consumer and Consumer Secret keys under the API Keys section under the Application settings heading (they are called API key and API secret).
 
 == Screenshots ==
 
-None
+1. Settings configuration page. Add Twitter API keys and authenticate accounts.
 
 == Changelog ==
 
