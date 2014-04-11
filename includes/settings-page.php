@@ -441,6 +441,13 @@ class pttSettingsPage {
 	 * Add JS.
 	 */
 	public function admin_enqueue_scripts() {
+		if ( 'settings_page_ptt-publish-to-twitter' !== get_current_screen()->base ) {
+			return;
+		}
+
+		// Denqueue select2 so we don't run into conflicts
+		wp_dequeue_script( 'select2' );
+
 		wp_register_script( 'ptt-select', PTT_URL . 'js/select2/select2.js', array( 'jquery' ), '3.4.6', true );
 
 		if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {

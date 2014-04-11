@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: publish-to-twitter 1.1.0\n"
+"Project-Id-Version: publish-to-twitter 1.1.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-09 00:50+0000\n"
+"POT-Creation-Date: 2014-04-11 18:21+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -160,34 +160,34 @@ msgid ""
 "current account."
 msgstr ""
 
-#: includes/settings-page.php:517 includes/settings-page.php:520
+#: includes/settings-page.php:524 includes/settings-page.php:527
 msgid "There was an error connecting with Twitter. Please try again."
 msgstr ""
 
-#: includes/settings-page.php:568
+#: includes/settings-page.php:575
 #, php-format
 msgid "The user @%s has been authorized to use with this site!"
 msgstr ""
 
-#: includes/settings-page.php:572
+#: includes/settings-page.php:579
 msgid ""
 "There was an saving information about the Twitter Account to the database. "
 "Please try again."
 msgstr ""
 
-#: includes/settings-page.php:575
+#: includes/settings-page.php:582
 msgid "The Twitter Account could not be saved at this time. Please try again."
 msgstr ""
 
-#: includes/settings-page.php:578 includes/settings-page.php:581
-#: includes/settings-page.php:584
+#: includes/settings-page.php:585 includes/settings-page.php:588
+#: includes/settings-page.php:591
 msgid "There was an error authenticating with Twitter. Please try again."
 msgstr ""
 
-#: includes/settings-page.php:610
+#: includes/settings-page.php:617
 msgid "The user has been unauthorized and associations have been removed."
 msgstr ""
 
-#: includes/settings-page.php:612
+#: includes/settings-page.php:619
 msgid "The user was unable to be removed. Please try again."
 msgstr ""
