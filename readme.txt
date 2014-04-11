@@ -35,6 +35,11 @@ Once the application is set up, you can find your Consumer and Consumer Secret k
 
 == Changelog ==
 
+= DEV =
+
+* Fix: Dequeue select2 on our settings page so other plugins don't conflict.
+* Fix: Only enqueue our custom scripts on our own settings page.
+
 = 1.1.1 =
 
 * Fix: Remove a poorly-coded configuration
