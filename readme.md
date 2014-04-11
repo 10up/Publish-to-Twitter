@@ -4,7 +4,7 @@
 **Tags:**              twitter, social  
 **Requires at least:** 3.8.1  
 **Tested up to:**      3.9  
-**Stable tag:**        1.1.0  
+**Stable tag:**        1.1.1  
 **License:**           GPLv2 or later  
 **License URI:**       http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -36,6 +36,10 @@ Once the application is set up, you can find your Consumer and Consumer Secret k
 
 
 ## Changelog ##
+
+### 1.1.1 ###
+
+* Fix: Remove a poorly-coded configuration
 
 ### 1.1.0 ###
 
