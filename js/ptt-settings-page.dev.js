@@ -26,9 +26,6 @@
 
 	// Setup Chosen for Terms
 	$( '.ptt-chosen-terms' ).select2( {
-		formatNoMatches   : function( term ) {
-			return 'No terms match';
-		},
 		multiple          : true,
 		minimumInputLength: 2,
 		ajax              : {
