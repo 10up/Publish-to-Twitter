@@ -6,13 +6,12 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: publish-to-twitter 1.1.2\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-11 18:21+0000\n"
+"POT-Creation-Date: 2014-05-29 09:42-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -24,11 +23,6 @@ msgstr ""
 
 #: includes/cpt-ptt-twitter-account.php:25
 msgid "Twitter Account"
-msgstr ""
-
-#: includes/cpt-ptt-twitter-account.php:26
-msgctxt "Label for \"add new twitter account\""
-msgid "Add New"
 msgstr ""
 
 #: includes/cpt-ptt-twitter-account.php:27
@@ -67,12 +61,6 @@ msgstr ""
 msgid "Twitter accounts associated with the site."
 msgstr ""
 
-#: includes/publish-tweet.php:77
-#, php-format
-msgctxt "[post title] [post link] by [twitter username]"
-msgid "%1$s %2$s by %3$s"
-msgstr ""
-
 #: includes/settings-page.php:105
 msgid "Publish to Twitter Settings"
 msgstr ""
@@ -90,11 +78,11 @@ msgid "Application Keys"
 msgstr ""
 
 #: includes/settings-page.php:141
-msgid "Consumer Key"
+msgid "API Key"
 msgstr ""
 
 #: includes/settings-page.php:142
-msgid "Consumer Secret"
+msgid "API Secret"
 msgstr ""
 
 #: includes/settings-page.php:145
@@ -120,8 +108,8 @@ msgstr ""
 #: includes/settings-page.php:168
 #, php-format
 msgid ""
-"You will need to create %san application on Twitter%s to retrieve your "
-"consumer keys."
+"You will need to create %san application on Twitter%s to retrieve your API "
+"keys."
 msgstr ""
 
 #: includes/settings-page.php:205
