@@ -35,6 +35,10 @@ Once the application is set up, you can find your Consumer and Consumer Secret k
 
 == Changelog ==
 
+= DEV =
+
+* Fix: Update Twitter Settings UI to match Twitter's actual fields.
+
 = 1.1.2 =
 
 * Fix: Dequeue select2 on our settings page so other plugins don't conflict.

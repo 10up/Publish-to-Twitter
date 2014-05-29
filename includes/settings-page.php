@@ -138,8 +138,8 @@ class pttSettingsPage {
 		if ( false === $this->_keys_hardcoded ) {
 			add_settings_section( 'ptt-publish-to-twitter-keys', esc_html__( 'Application Keys', 'tweetpublish' ), array( $this, 'add_keys_text' ), 'ptt-publish-to-twitter' );
 
-			add_settings_field( 'ptt-publish-to-twitter-consumer-key',    esc_html__( 'Consumer Key',    'tweetpublish' ), array( $this, 'add_consumer_key' ),    'ptt-publish-to-twitter', 'ptt-publish-to-twitter-keys' );
-			add_settings_field( 'ptt-publish-to-twitter-consumer-secret', esc_html__( 'Consumer Secret', 'tweetpublish' ), array( $this, 'add_consumer_secret' ), 'ptt-publish-to-twitter', 'ptt-publish-to-twitter-keys' );
+			add_settings_field( 'ptt-publish-to-twitter-consumer-key',    esc_html__( 'API Key',    'tweetpublish' ), array( $this, 'add_consumer_key' ),    'ptt-publish-to-twitter', 'ptt-publish-to-twitter-keys' );
+			add_settings_field( 'ptt-publish-to-twitter-consumer-secret', esc_html__( 'API Secret', 'tweetpublish' ), array( $this, 'add_consumer_secret' ), 'ptt-publish-to-twitter', 'ptt-publish-to-twitter-keys' );
 		}
 
 		add_settings_section( 'ptt-publish-to-twitter-main-settings', esc_html__( 'Account/Category Associations', 'tweetpublish' ), array( $this, 'add_accounts_text' ), 'ptt-publish-to-twitter' );
@@ -165,7 +165,7 @@ class pttSettingsPage {
 	public function add_keys_text() {
 		?>
         <p><?php esc_html_e( 'OAuth Settings', 'tweetpublish' ); ?></p>
-	    <p class="description"><?php echo sprintf( esc_html__( 'You will need to create %san application on Twitter%s to retrieve your consumer keys.', 'tweetpublish' ), '<a href="https://dev.twitter.com/apps/">', '</a>' ); ?></p>
+	    <p class="description"><?php echo sprintf( esc_html__( 'You will need to create %san application on Twitter%s to retrieve your API keys.', 'tweetpublish' ), '<a href="https://dev.twitter.com/apps/">', '</a>' ); ?></p>
 	<?php
 	}
 
