@@ -3,8 +3,8 @@ Contributors:      10up
 Donate link:       http://10up.com
 Tags:              twitter, social
 Requires at least: 3.8.1
-Tested up to:      3.9
-Stable tag:        1.1.2
+Tested up to:      3.9.1
+Stable tag:        1.1.3
 License:           GPLv2 or later
 License URI:       http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -34,6 +34,10 @@ Once the application is set up, you can find your Consumer and Consumer Secret k
 1. Settings configuration page. Add Twitter API keys and authenticate accounts.
 
 == Changelog ==
+
+= 1.1.3 =
+
+* Fix: Update Twitter Settings UI to match Twitter's actual fields.
 
 = 1.1.2 =
 
